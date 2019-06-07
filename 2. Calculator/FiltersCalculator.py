@@ -3,19 +3,19 @@ import numpy
 
 class FiltersCalculator:
     '''
-    Calculates the necessary data to plot graphs for first and second order filters.
+    Calculates the necessary data to plot graphs for first and second order filters (G is the gain).
     - To create first order filters:
-        myFilterCalculator('HIGH_PASS', [K, w0])
-        myFilterCalculator('LOW_PASS', [K, w0])
-        myFilterCalculator('ALL_PASS', [K, w0])
+        myFilterCalculator('HIGH_PASS', [G, wp])
+        myFilterCalculator('LOW_PASS', [G, wp])
+        myFilterCalculator('ALL_PASS', [G, wp])
     - To create second order filters:
-        myFilterCalculator('HIGH_PASS', [K, w0])
-        myFilterCalculator('LOW_PASS', [K, w0])
-        myFilterCalculator('ALL_PASS', [K, w0])
-        myFilterCalculator('BAND_PASS', [K, w0])
-        myFilterCalculator('NOTCH', [K, w0])
-        myFilterCalculator('LOW_PASS_NOTCH', [K, w0])
-        myFilterCalculator('HIGH_PASS_NOTCH', [K, w0])
+        myFilterCalculator('HIGH_PASS', [G, wp, E])
+        myFilterCalculator('LOW_PASS', [G, wp, E])
+        myFilterCalculator('ALL_PASS', [G, wp, E])
+        myFilterCalculator('BAND_PASS', [G, w0, E])
+        myFilterCalculator('NOTCH', [G, wp, E])
+        myFilterCalculator('LOW_PASS_NOTCH', [G, wp, E, wz, Ez])
+        myFilterCalculator('HIGH_PASS_NOTCH', [G, wp, E, wz, Ez])
     - To get the data for the response to:
         Sine of frequency f and amplitude A: myFilterCalculator.getResponseToSine(f, A)
         Impulse of amplitude A: myFilterCalculator.getResponseToImpulse(A)
@@ -71,76 +71,86 @@ class FiltersCalculator:
         else:
             return False
 
-    def fstOrderLowPass(self, K, wp):
+    def fstOrderLowPass(self, G, wp):
         '''
         Sets self.sys as a first order low-pass filter who's transfer function is:
         H(s) = K/((s/wp)+1)
         '''
+        K = G
         self.sys = signal.lti([K], [1/wp, 1])
 
-    def fstOrderHighPass(self, K, wp):
+    def fstOrderHighPass(self, G, wp):
         '''
         Sets self.sys as a first order high-pass filter who's transfer function is:
         H(s) = K*s/((s/wp)+1)
         '''
+        K = G / wp
         self.sys = signal.lti([K, 0], [1/wp, 1])
 
-    def fstOrderAllPass(self, K, wp):
+    def fstOrderAllPass(self, G, wp):
         '''
         Sets self.sys as a first order all-pass filter who's transfer function is:
         H(s) = K*((s/wp)-1)/((s/wp)+1)
         '''
+        K = G
         self.sys = signal.lti([K/wp, -K], [1/wp, 1])
 
-    def sndOrderLowPass(self, K, wp, E):
+    def sndOrderLowPass(self, G, wp, E):
         '''
         Sets self.sys as a second order low-pass filter who's transfer function is:
         H(s) = K/((s/wp)^2+2(E/wp)*s+1)
         '''
+        K = G
         self.sys = signal.lti([K], [(1/wp)**2, 2*(E/wp), 1])
 
-    def sndOrderHighPass(self, K, wp, E):
+    def sndOrderHighPass(self, G, wp, E):
         '''
         Sets self.sys as a second order high-pass filter who's transfer function is:
         H(s) = K*s^2/((s/wp)^2+2(E/wp)*s+1)
         '''
+        K = G / (wp**2)
         self.sys = signal.lti([K, 0, 0], [(1/wp)**2, 2*(E/wp), 1])
 
-    def sndOrderAllPass(self, K, wp, E):
+    def sndOrderAllPass(self, G, wp, E):
         '''
         Sets self.sys as a second order all-pass filter who's transfer function is:
         H(s) = K*((s/wp)^2-2(E/wp)*s+1)/((s/wp)^2+2(E/wp)*s+1)
         '''
+        K = G
         self.sys = signal.lti([K*((1/wp)**2), -K*2*(E/wp), K], [(1/wp)**2, 2*(E/wp), 1])
 
-    def sndOrderBandPass(self, K, wp, E):
+    def sndOrderBandPass(self, G, w0, E):
         '''
         Sets self.sys as a second order band-pass filter who's transfer function is:
         H(s) = K*s/((s/wp)^2+2(E/wp)*s+1)
         '''
-        self.sys = signal.lti([K, 0], [(1/wp)**2, 2*(E/wp), 1])
+        K = 2*E*G/w0
+        self.sys = signal.lti([K, 0], [(1/w0)**2, 2*(E/w0), 1])
 
-    def sndOrderNotch(self, K, wp, E):
+    def sndOrderNotch(self, G, wp, E):
         '''
         Sets self.sys as a second order notch filter who's transfer function is:
         H(s) = K*((s/wp)^2+1)/((s/wp)^2+2(E/wp)*s+1)
         '''
+        K = G
         self.sys = signal.lti([K*((1/wp)**2), K], [(1/wp)**2, 2*(E/wp), 1])
 
-    def sndOrderLowPassNotch(self, K, wp, E, wz, Ez):
+    def sndOrderLowPassNotch(self, G, wp, E, wz, Ez):
         '''
         Sets self.sys as a second order low-pass notch filter who's transfer function is:
         H(s) = K*((s/wz)^2+2(Ez/wz)*s+1)/((s/wp)^2+2(E/wp)*s+1)
         wz > wp WILL BE VALIDATED
         '''
+        K = G
         self.sys = signal.lti([K*((1/wz)**2), K*2*(Ez/wz), K], [(1/wp)**2, 2*(E/wp), 1])
 
-    def sndOrderHighPassNotch(self, K, wp, E, wz, Ez):
+    def sndOrderHighPassNotch(self, G, wp, E, wz, Ez):
         '''
         Sets self.sys as a second order low-pass notch filter who's transfer function is:
         H(s) = K*((s/wz)^2+2(Ez/wz)*s+1)/((s/wp)^2+2(E/wp)*s+1)
         wz < wp WILL BE VALIDATED
         '''
+        K = G * (wz / wp)**2
         self.sys = signal.lti([K*((1/wz)**2), K*2*(Ez/wz), K], [(1/wp)**2, 2*(E/wp), 1])
 
     def getBode(self, useHertz: bool, usedB: bool):
