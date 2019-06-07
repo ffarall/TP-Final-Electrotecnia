@@ -4,9 +4,17 @@ class FiltersCalculator:
     '''
     Calculates the necessary data to plot graphs for first and second order filters.
     - To create first order filters:
-
+        myFilterCalculator('HIGH_PASS', [K, w0])
+        myFilterCalculator('LOW_PASS', [K, w0])
+        myFilterCalculator('ALL_PASS', [K, w0])
     - To create second order filters:
-
+        myFilterCalculator('HIGH_PASS', [K, w0])
+        myFilterCalculator('LOW_PASS', [K, w0])
+        myFilterCalculator('ALL_PASS', [K, w0])
+        myFilterCalculator('BAND_PASS', [K, w0])
+        myFilterCalculator('NOTCH', [K, w0])
+        myFilterCalculator('LOW_PASS_NOTCH', [K, w0])
+        myFilterCalculator('HIGH_PASS_NOTCH', [K, w0])
     '''
 
     def __init__(self):
@@ -127,3 +135,28 @@ class FiltersCalculator:
         wz < wp WILL BE VALIDATED
         '''
         self.sys = signal.lti([K*((1/wz)**2), K*2*(Ez/wz), K], [(1/wp)**2, 2*(E/wp), 1])
+
+    def getBode(self, useHertz: bool, usedB: bool):
+        '''
+        Returns data to plot a bode graph for the current system in self.sys
+        '''
+        pass
+
+    def getResponseToSine(self, f, A):
+        '''
+        Returns data to plot a time response to a sine of frequency f and amplitude A
+        '''
+        pass
+
+    def getResponseToImpulse(self, A):
+        '''
+        Returns data to plot a time response to an impulse of amplitude A
+        '''
+        pass
+
+    def getResponseToPulse(self, dc, A):
+        '''
+        Returns data to plot a time response to a pulse of amplitude A and duty cycle dc
+        '''
+        pass
+    
