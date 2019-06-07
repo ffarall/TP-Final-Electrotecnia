@@ -1,4 +1,5 @@
 from scipy import signal
+import numpy
 
 class FiltersCalculator:
     '''
@@ -15,6 +16,12 @@ class FiltersCalculator:
         myFilterCalculator('NOTCH', [K, w0])
         myFilterCalculator('LOW_PASS_NOTCH', [K, w0])
         myFilterCalculator('HIGH_PASS_NOTCH', [K, w0])
+    - To get the data for the response to:
+        Sine of frequency f and amplitude A: myFilterCalculator.getResponseToSine(f, A)
+        Impulse of amplitude A: myFilterCalculator.getResponseToImpulse(A)
+        Pulse of amplitude A and duty cycle dc: myFilterCalculator.getResponseToPulse(A, dc)
+    - To get the data for the bode graph:
+        myFilterCalculator.getBode()
     '''
 
     def __init__(self):
@@ -138,25 +145,37 @@ class FiltersCalculator:
 
     def getBode(self, useHertz: bool, usedB: bool):
         '''
-        Returns data to plot a bode graph for the current system in self.sys
+        Returns data to plot a bode graph for the current system in self.sys as a 
+        3-tuple containing arrays of frequencies [rad/s], magnitude [dB] and phase [deg]
         '''
-        pass
+        return self.sys.bode()
 
     def getResponseToSine(self, f, A):
         '''
-        Returns data to plot a time response to a sine of frequency f and amplitude A
+        Returns data to plot a time response to a sine of frequency f and amplitude A as a 
+        3-tuple with T (1D ndarray with the time values for the output), yout (1 ndarray 
+        with the system's response) and xout (ndarray the time evolution of the state vector)
         '''
-        pass
+        Fs = 8000
+        sample = 8000
+        t = numpy.arange(sample)
+        x = A*numpy.sin(2 * numpy.pi * f * t / Fs)
+
+        return self.sys.output(x, t)
 
     def getResponseToImpulse(self, A):
         '''
-        Returns data to plot a time response to an impulse of amplitude A
+        Returns data to plot a time response to an impulse of amplitude A as a
+        2-tuple with T (a 1-D array of time points) and yout (a 1-D array containing 
+        the response of the system to the impulse (except for singularities at zero))
         '''
-        pass
+        return self.sys.impulse()
 
     def getResponseToPulse(self, dc, A):
         '''
-        Returns data to plot a time response to a pulse of amplitude A and duty cycle dc
+        Returns data to plot a time response to a pulse of amplitude A and duty cycle dc as a
+        2-tuple with T (1D ndarray with the time values for the output) and yout (1 ndarray 
+        with the system's response to the step)
         '''
-        pass
+        return self.sys.step()
     
