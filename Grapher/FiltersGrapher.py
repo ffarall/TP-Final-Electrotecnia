@@ -55,7 +55,7 @@ class FiltersGrapher:
 
         elif self.filterOrder == 2:
             self.calculator.secondOrderFilter(self.filterType, args[2:])
-            t, y = self.calculator.getResponseToSine(args[0], args[1])
+            t, y, out = self.calculator.getResponseToSine(args[0], args[1])
 
         plt.figure()
         plt.plot(t, y)
@@ -148,7 +148,7 @@ class FiltersGrapher:
             w, g, phase = self.calculator.getBode(self.usingHertz, self.usingdB)
 
         plt.figure()
-        plt.plot(w, g)
+        plt.semilogx(w, g)
         if self.usingHertz:
             plt.xlabel('Frecuencia (Hz)')
         else:
@@ -163,6 +163,15 @@ class FiltersGrapher:
 if __name__ == '__main__':
     grapher = FiltersGrapher()
     testTypes = ['HIGH_PASS', 'LOW_PASS', 'ALL_PASS']
+    for test in testTypes:
+        grapher.setType(test)
+        grapher.plotBode([20, 1, 1, 1, 1])
+        grapher.plotResponseToHeaviside([1, 10, 1, 1, 1, 1])
+        grapher.plotResponseToPulseTrain([1, 0.5, 10, 1, 1, 1, 1])
+        grapher.plotResponseToSine([50, 1, 10, 1, 1, 1, 1])
+
+    testTypes = ['HIGH_PASS', 'LOW_PASS', 'ALL_PASS', 'BAND_PASS', 'NOTCH', 'LOW_PASS_NOTCH', 'HIGH_PASS_NOTCH']
+    grapher.setOrder(2)
     for test in testTypes:
         grapher.setType(test)
         grapher.plotBode([20, 1, 1, 1, 1])
