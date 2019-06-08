@@ -28,12 +28,12 @@ class FiltersCalculator:
     '''
 
     def __init__(self):
-        self.sys = 0 #Set as 0 just for initialization.
+        self.sys = 0 #Set as 0 just for initialisation.
 
 
     def firstOrderFilter(self, filterType: str, parameters: list):
         '''
-        Detects filter type and calls corresponding method to initialize self.sys
+        Detects filter type and calls corresponding method to initialise self.sys
         '''
         if filterType == 'HIGH_PASS':
             self.fstOrderHighPass(parameters[0], parameters[1])
@@ -50,7 +50,7 @@ class FiltersCalculator:
 
     def secondOrderFilter(self,filterType: str, parameters: list):
         '''
-        Detects filter type and calls corresponding method to initialize self.sys
+        Detects filter type and calls corresponding method to initialise self.sys
         '''
         if filterType == 'HIGH_PASS':
             self.sndOrderHighPass(parameters[0], parameters[1], parameters[2])
@@ -190,9 +190,36 @@ class FiltersCalculator:
         with the system's response) and xout (ndarray the time evolution of the state vector)
         '''
         Fs = 8000
-        sample = 8000
+        sample = 800
         t = numpy.arange(sample)
         x = A*numpy.sin(2 * numpy.pi * f * t / Fs)
+
+        return self.sys.output(x, t)
+
+    
+    def getResponseToHeaviside(self, A):
+        '''
+        Returns data to plot a time response to a heaviside function of amplitude A as a 
+        3-tuple with T (1D ndarray with the time values for the output), yout (1D ndarray 
+        with the system's response) and xout (ndarray the time evolution of the state vector)
+        '''
+        sample = 100
+        t = numpy.linspace(0, 100, 5000)
+        x = A * (numpy.sign(t) + 1)
+
+        return self.sys.output(x, t)
+
+
+    def getResponseToPulseTrain(self, A, dc):
+        '''
+        Returns data to plot a time response to a pulse train of amplitude A as a 
+        3-tuple with T (1D ndarray with the time values for the output), yout (1D ndarray 
+        with the system's response) and xout (ndarray the time evolution of the state vector)
+        '''
+        T=10
+        N=10
+        t = numpy.linspace(0, 100, 5000)
+        x=signal.square(2 * numpy.pi * (1/T) * t, dc)
 
         return self.sys.output(x, t)
 
@@ -206,7 +233,7 @@ class FiltersCalculator:
         return self.sys.impulse()
 
 
-    def getResponseToPulse(self, dc, A):
+    def getResponseToPulse(self, A, dc):
         '''
         Returns data to plot a time response to a pulse of amplitude A and duty cycle dc as a
         2-tuple with T (1D ndarray with the time values for the output) and yout (1 ndarray 

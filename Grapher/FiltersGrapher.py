@@ -13,8 +13,10 @@ class FiltersGrapher:
         Can be HIGH_PASS, LOW_PASS, ALL_PASS, BAND_PASS, NOTCH, LOW_PASS_NOTCH, HIGH_PASS_NOTCH.
     - Plot like this:
         myFiltersGrapher.plotResponseToSine([f, A, G, wp, E, wz, Ez])
+        myFiltersGrapher.plotResponseToHeaviside([A, G, wp, E, wz, Ez])
         myFiltersGrapher.plotResponseToImpulse([A, G, wp, E, wz, Ez])
-        myFiltersGrapher.plotResponseTopPulse([A, dc, G, wp, E, wz, Ez])
+        myFiltersGrapher.plotResponseToPulse([A, dc, G, wp, E, wz, Ez])
+        myFiltersGrapher.plotResponseToPulseTrain([A, dc, G, wp, E, wz, Ez])
         myFiltersGrapher.plotBode([G, wp, E, wz, Ez])
         E is necessary for all second order filters.
         wz and Ez are only needed when type is LOW_PASS_NOTCH or HIGH_PASS_NOTCH.
@@ -45,72 +47,125 @@ class FiltersGrapher:
 
 
     def plotResponseToSine(self, args: list):
+        t = 0
+        y = 0
         if self.filterOrder == 1:
             self.calculator.firstOrderFilter(self.filterType, args[2:])
             t, y, out = self.calculator.getResponseToSine(args[0], args[1])
-            plt.figure()
-            plt.plot(t, y)
-            plt.show()
 
         elif self.filterOrder == 2:
             self.calculator.secondOrderFilter(self.filterType, args[2:])
             t, y = self.calculator.getResponseToSine(args[0], args[1])
-            plt.figure()
-            plt.plot(t, y)
-            plt.show()
 
+        plt.figure()
+        plt.plot(t, y)
+        plt.xlabel('Tiempo (s)')
+        plt.ylabel('Respuesta a senoidal')
+        plt.show()
 
     def plotResponseToImpulse(self, args: list):
+        t = 0
+        y = 0
         if self.filterOrder == 1:
             self.calculator.firstOrderFilter(self.filterType, args[1:])
             t, y = self.calculator.getResponseToImpulse(args[0])
-            plt.figure()
-            plt.plot(t, y)
-            plt.show()
 
         elif self.filterOrder == 2:
             self.calculator.secondOrderFilter(self.filterType, args[1:])
             t, y = self.calculator.getResponseToImpulse(args[0])
-            plt.figure()
-            plt.plot(t, y)
-            plt.show()
+            
+        plt.figure()
+        plt.plot(t, y)
+        plt.xlabel('Tiempo (s)')
+        plt.ylabel('Respuesta al impulso')
+        plt.show()
 
 
-    def plotResponseTopPulse(self, args: list):
+    def plotResponseToPulse(self, args: list):
+        t = 0
+        y = 0
         if self.filterOrder == 1:
             self.calculator.firstOrderFilter(self.filterType, args[2:])
             t, y = self.calculator.getResponseToPulse(args[0], args[1])
-            plt.figure()
-            plt.plot(t, y)
-            plt.show()
 
         elif self.filterOrder == 2:
             self.calculator.secondOrderFilter(self.filterType, args[2:])
             t, y = self.calculator.getResponseToPulse(args[0], args[1])
-            plt.figure()
-            plt.plot(t, y)
-            plt.show()
+            
+        plt.figure()
+        plt.plot(t, y)
+        plt.xlabel('Tiempo (s)')
+        plt.ylabel('Respuesta al pulso')
+        plt.show()
+
+
+    def plotResponseToHeaviside(self, args: list):
+        t = 0
+        y = 0
+        if self.filterOrder == 1:
+            self.calculator.firstOrderFilter(self.filterType, args[1:])
+            t, y, out= self.calculator.getResponseToHeaviside(args[0])
+
+        elif self.filterOrder == 2:
+            self.calculator.secondOrderFilter(self.filterType, args[1:])
+            t, y, out = self.calculator.getResponseToHeaviside(args[0])
+            
+        plt.figure()
+        plt.plot(t, y)
+        plt.xlabel('Tiempo (s)')
+        plt.ylabel('Respuesta al escalón')
+        plt.show()
+
+
+    def plotResponseToPulseTrain(self, args: list):
+        t = 0
+        y = 0
+        if self.filterOrder == 1:
+            self.calculator.firstOrderFilter(self.filterType, args[2:])
+            t, y, out= self.calculator.getResponseToPulseTrain(args[0], args[1])
+
+        elif self.filterOrder == 2:
+            self.calculator.secondOrderFilter(self.filterType, args[2:])
+            t, y, out = self.calculator.getResponseToPulseTrain(args[0], args[1])
+            
+        plt.figure()
+        plt.plot(t, y)
+        plt.xlabel('Tiempo (s)')
+        plt.ylabel('Respuesta al tren de pulsos')
+        plt.show()
 
 
     def plotBode(self, args: list):
+        w = 0
+        g = 0
+        phase = 0
         if self.filterOrder == 1:
             self.calculator.firstOrderFilter(self.filterType, args)
             w, g, phase = self.calculator.getBode(self.usingHertz, self.usingdB)
-            plt.figure()
-            plt.plot(w, g)
-            plt.show()
 
         elif self.filterOrder == 2:
             self.calculator.secondOrderFilter(self.filterType, args)
-            t, y = self.calculator.getBode(self.usingHertz, self.usingdB)
-            plt.figure()
-            plt.plot(t, y)
-            plt.show()
+            w, g, phase = self.calculator.getBode(self.usingHertz, self.usingdB)
+
+        plt.figure()
+        plt.plot(w, g)
+        if self.usingHertz:
+            plt.xlabel('Frecuencia (Hz)')
+        else:
+            plt.xlabel('Frecuencia (rad/s)')
+        if self.usingdB:
+            plt.ylabel('Ganancia (dB)')
+        else:
+            plt.ylabel('Ganancia (respuesta/entrada)')
+        plt.show()
 
 
 if __name__ == '__main__':
     grapher = FiltersGrapher()
-    grapher.plotBode([10, 1, 1, 1, 1])
-    grapher.plotResponseToImpulse([1, 10, 1, 1, 1, 1])
-    grapher.plotResponseTopPulse([1, 0.5, 10, 1, 1, 1, 1])
-    grapher.plotResponseToSine([50, 1, 10, 1, 1, 1, 1])
+    testTypes = ['HIGH_PASS', 'LOW_PASS', 'ALL_PASS']
+    for test in testTypes:
+        grapher.setType(test)
+        grapher.plotBode([20, 1, 1, 1, 1])
+        grapher.plotResponseToHeaviside([1, 10, 1, 1, 1, 1])
+        grapher.plotResponseToPulseTrain([1, 0.5, 10, 1, 1, 1, 1])
+        grapher.plotResponseToSine([50, 1, 10, 1, 1, 1, 1])
