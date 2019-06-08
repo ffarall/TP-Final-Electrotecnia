@@ -174,7 +174,7 @@ if __name__ == '__main__':
     grapher.setOrder(2)
     for test in testTypes:
         grapher.setType(test)
-        grapher.plotBode([20, 1, 1, 1, 1])
-        grapher.plotResponseToHeaviside([1, 10, 1, 1, 1, 1])
-        grapher.plotResponseToPulseTrain([1, 0.5, 10, 1, 1, 1, 1])
-        grapher.plotResponseToSine([50, 1, 10, 1, 1, 1, 1])
+        grapher.plotBode([20, 1, 3, 5, 2])
+        grapher.plotResponseToHeaviside([1, 10, 1, 3, 5, 2])
+        grapher.plotResponseToPulseTrain([1, 0.5, 10, 1, 3, 5, 2])
+        grapher.plotResponseToSine([50, 1, 10, 1, 3, 5, 2])
