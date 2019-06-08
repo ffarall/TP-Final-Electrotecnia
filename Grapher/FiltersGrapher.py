@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+import sys
+sys.path.insert(0, 'C:/Users/facun/OneDrive/Desktop/ITBA/C4 - Electrotecnia/TP Final')
 from Calculator.FiltersCalculator import FiltersCalculator
 
 class FiltersGrapher:
@@ -45,15 +47,17 @@ class FiltersGrapher:
     def plotResponseToSine(self, args: list):
         if self.filterOrder == 1:
             self.calculator.firstOrderFilter(self.filterType, args[2:])
-            t, y = self.calculator.getResponseToSine(args[0], args[1])
+            t, y, out = self.calculator.getResponseToSine(args[0], args[1])
             plt.figure()
             plt.plot(t, y)
+            plt.show()
 
         elif self.filterOrder == 2:
             self.calculator.secondOrderFilter(self.filterType, args[2:])
             t, y = self.calculator.getResponseToSine(args[0], args[1])
             plt.figure()
             plt.plot(t, y)
+            plt.show()
 
 
     def plotResponseToImpulse(self, args: list):
@@ -62,12 +66,14 @@ class FiltersGrapher:
             t, y = self.calculator.getResponseToImpulse(args[0])
             plt.figure()
             plt.plot(t, y)
+            plt.show()
 
         elif self.filterOrder == 2:
             self.calculator.secondOrderFilter(self.filterType, args[1:])
             t, y = self.calculator.getResponseToImpulse(args[0])
             plt.figure()
             plt.plot(t, y)
+            plt.show()
 
 
     def plotResponseTopPulse(self, args: list):
@@ -76,23 +82,35 @@ class FiltersGrapher:
             t, y = self.calculator.getResponseToPulse(args[0], args[1])
             plt.figure()
             plt.plot(t, y)
+            plt.show()
 
         elif self.filterOrder == 2:
             self.calculator.secondOrderFilter(self.filterType, args[2:])
             t, y = self.calculator.getResponseToPulse(args[0], args[1])
             plt.figure()
             plt.plot(t, y)
+            plt.show()
 
 
     def plotBode(self, args: list):
         if self.filterOrder == 1:
             self.calculator.firstOrderFilter(self.filterType, args)
-            t, y = self.calculator.getBode(self.usingHertz, self.usingdB)
+            w, g, phase = self.calculator.getBode(self.usingHertz, self.usingdB)
             plt.figure()
-            plt.plot(t, y)
+            plt.plot(w, g)
+            plt.show()
 
         elif self.filterOrder == 2:
             self.calculator.secondOrderFilter(self.filterType, args)
             t, y = self.calculator.getBode(self.usingHertz, self.usingdB)
             plt.figure()
             plt.plot(t, y)
+            plt.show()
+
+
+if __name__ == '__main__':
+    grapher = FiltersGrapher()
+    grapher.plotBode([10, 1, 1, 1, 1])
+    grapher.plotResponseToImpulse([1, 10, 1, 1, 1, 1])
+    grapher.plotResponseTopPulse([1, 0.5, 10, 1, 1, 1, 1])
+    grapher.plotResponseToSine([50, 1, 10, 1, 1, 1, 1])
