@@ -239,7 +239,7 @@ class Ui_MainWindow(object):
         self.xsi = QtWidgets.QLineEdit(self.frame_9)
         self.xsi.setMaximumSize(QtCore.QSize(300, 16777215))
         self.xsi.setClearButtonEnabled(True)
-        self.xsi.setObjectName("xsi")
+        self.xsi.setObjectName("x")
         self.horizontalLayout_3.addWidget(self.xsi)
         self.gridLayout_10.addLayout(self.horizontalLayout_3, 1, 1, 1, 1)
         self.horizontalLayout_6 = QtWidgets.QHBoxLayout()
@@ -1079,8 +1079,8 @@ class Ui_MainWindow(object):
         self.returnButton = QtWidgets.QPushButton(self.centralwidget)
         self.returnButton.setMaximumSize(QtCore.QSize(50, 100))
         self.returnButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.returnButton.setStyleSheet("image: url(:/return/return-icon.jpg);\n"
-"background-image: url(:/return/return-icon.jpg);")
+        self.returnButton.setStyleSheet("image: url(:/return-icon/returnIcon.jpg);\n"
+"background-image: url(:/return-icon/returnIcon.jpg);")
         self.returnButton.setText("")
         self.returnButton.setObjectName("returnButton")
         self.gridLayout_2.addWidget(self.returnButton, 0, 0, 1, 1)
@@ -1129,7 +1129,7 @@ class Ui_MainWindow(object):
         self.eje_y.setItemText(0, _translate("MainWindow", "dBs"))
         self.eje_y.setItemText(1, _translate("MainWindow", "Veces"))
         self.graficarBode.setText(_translate("MainWindow", "Graficar"))
-        self.label_14.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt; text-decoration: underline;\">Diagrama de Bode:</span></p></body></html>"))
+        self.label_14.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:12pt; text-decoration: underline;\">Bode:</span></p></body></html>"))
         self.label_12.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" text-decoration: underline;\">Salida del sistema:</span></p></body></html>"))
         self.label_13.setText(_translate("MainWindow", "Entrada:"))
         self.entrada.setItemText(0, _translate("MainWindow", "Senoide"))
