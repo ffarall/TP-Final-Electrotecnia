@@ -51,11 +51,11 @@ class FiltersGrapher:
         y = 0
         if self.filterOrder == 1:
             self.calculator.firstOrderFilter(self.filterType, args[2:])
-            t, y, out = self.calculator.getResponseToSine(args[0], args[1])
+            t, y, output = self.calculator.getResponseToSine(args[0], args[1])
 
         elif self.filterOrder == 2:
             self.calculator.secondOrderFilter(self.filterType, args[2:])
-            t, y, out = self.calculator.getResponseToSine(args[0], args[1])
+            t, y, output = self.calculator.getResponseToSine(args[0], args[1])
 
         plt.figure()
         plt.plot(t, y)
@@ -104,11 +104,11 @@ class FiltersGrapher:
         y = 0
         if self.filterOrder == 1:
             self.calculator.firstOrderFilter(self.filterType, args[1:])
-            t, y, out= self.calculator.getResponseToHeaviside(args[0])
+            t, y, output= self.calculator.getResponseToHeaviside(args[0])
 
         elif self.filterOrder == 2:
             self.calculator.secondOrderFilter(self.filterType, args[1:])
-            t, y, out = self.calculator.getResponseToHeaviside(args[0])
+            t, y, output = self.calculator.getResponseToHeaviside(args[0])
             
         plt.figure()
         plt.plot(t, y)
@@ -122,11 +122,11 @@ class FiltersGrapher:
         y = 0
         if self.filterOrder == 1:
             self.calculator.firstOrderFilter(self.filterType, args[2:])
-            t, y, out= self.calculator.getResponseToPulseTrain(args[0], args[1])
+            t, y, output = self.calculator.getResponseToPulseTrain(args[0], args[1])
 
         elif self.filterOrder == 2:
             self.calculator.secondOrderFilter(self.filterType, args[2:])
-            t, y, out = self.calculator.getResponseToPulseTrain(args[0], args[1])
+            t, y, output = self.calculator.getResponseToPulseTrain(args[0], args[1])
             
         plt.figure()
         plt.plot(t, y)

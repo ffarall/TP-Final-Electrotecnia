@@ -24,9 +24,7 @@ class ElectroGUI(FirstWindow.Ui_MainWindow, QtWidgets.QMainWindow):
 
         #######Menu principal#######
         self.primerOrden.clicked.connect(self.abrirPrimerOrdenMenu)
-        self.miGraficador.setOrder(1)
         self.segundoOrden.clicked.connect(self.abrirSegundoOrdenMenu)
-        self.miGraficador.setOrder(2)
         self.returnButton.clicked.connect(self.abrirMainMenu)
 
         #######Menu de primer orden#######
@@ -53,7 +51,7 @@ class ElectroGUI(FirstWindow.Ui_MainWindow, QtWidgets.QMainWindow):
         #######Menu de graficos#######
         self.entrada.currentTextChanged.connect(self.entradaUsuario)
         self.graficarSalida.clicked.connect(self.mostrarGraficoSalida)
-        ##self.graficarBode.clicked.connect(self.mostrarGraficoBode)
+        self.graficarBode.clicked.connect(self.mostrarGraficoBode)
     
 ###Estos metodos guardan el texto ingresado por el usuario en sus respectivas variables###
     def guardarTextoFrecOrden1 (self,text):
@@ -77,7 +75,7 @@ class ElectroGUI(FirstWindow.Ui_MainWindow, QtWidgets.QMainWindow):
         self.activarBotones2()
 
     def guardarTextoOmegaz(self,text):
-        self.textoOmegaz = text
+        self.textoWz = text
         self.activarBotones2()
 
     def guardarTextoXsiz(self,text):
@@ -86,46 +84,46 @@ class ElectroGUI(FirstWindow.Ui_MainWindow, QtWidgets.QMainWindow):
 
 ###Estos metodos activan y desactivan los botones para seleccionar un filtro solo si los datos requeridos fueron ingresados###
     def activarBotones1(self):
-        if self.textoFrec != "0" and self.textoGanancia != "0":
+        if self.textoFrec != "0" and self.textoGanancia != "0" and self.textoFrec != "" and self.textoGanancia != "":
             self.pasaAltosPrimerOrden.setEnabled(True)
             self.pasaBajosPrimerOrden.setEnabled(True)
             self.pasaTodoPrimerOrden.setEnabled(True)
             self.pasaAltosPrimerOrden.clicked.connect(self.abrirGraficosMenu)
-            self.miGraficador.setType("HIGH_PASS")
+            self.pasaAltosPrimerOrden.clicked.connect(self.setHighPass)
             self.pasaBajosPrimerOrden.clicked.connect(self.abrirGraficosMenu)
-            self.miGraficador.setType("LOW_PASS")
+            self.pasaBajosPrimerOrden.clicked.connect(self.setLowPass)
             self.pasaTodoPrimerOrden.clicked.connect(self.abrirGraficosMenu)
-            self.miGraficador.setType("ALL_PASS")
+            self.pasaTodoPrimerOrden.clicked.connect(self.setPassAll)
         else:
             self.pasaAltosPrimerOrden.setEnabled(False)
             self.pasaBajosPrimerOrden.setEnabled(False)
             self.pasaTodoPrimerOrden.setEnabled(False)
 
     def activarBotones2(self):
-        if self.textoFrec != "0" and self.textoGanancia != "0" and self.textoXsi != "0":
+        if self.textoFrec != "0" and self.textoGanancia != "0" and self.textoXsi != "0" and self.textoFrec != "" and self.textoGanancia != "" and self.textoXsi != "":
             self.pasaAltosSegundoOrden.setEnabled(True)
             self.pasaBajosSegundoOrden.setEnabled(True)
             self.pasaTodoSegundoOrden.setEnabled(True)
             self.pasaBanda.setEnabled(True)
             self.notch.setEnabled(True)    
             self.pasaAltosSegundoOrden.clicked.connect(self.abrirGraficosMenu)
-            self.miGraficador.setType("HIGH_PASS")
+            self.pasaAltosSegundoOrden.clicked.connect(self.setHighPass)
             self.pasaBajosSegundoOrden.clicked.connect(self.abrirGraficosMenu)
-            self.miGraficador.setType("LOW_PASS")
+            self.pasaBajosSegundoOrden.clicked.connect(self.setLowPass)
             self.pasaTodoSegundoOrden.clicked.connect(self.abrirGraficosMenu)
-            self.miGraficador.setType("PASS_ALL")
+            self.pasaTodoSegundoOrden.clicked.connect(self.setPassAll)
             self.pasaBanda.clicked.connect(self.abrirGraficosMenu)
-            self.miGraficador.setType("BAND_PASS")
+            self.pasaBanda.clicked.connect(self.setBandPass)
             self.notch.clicked.connect(self.abrirGraficosMenu)
-            self.miGraficador.setType("NOTCH")
+            self.notch.clicked.connect(self.setNotch)
             
-            if self.textoXsiz != "" and self.textoOmegaz != "":
+            if self.textoXsiz != "0" and self.textoWz != "0" and self.textoXsiz != "" and self.textoWz != "":
                 self.highPassNotch.setEnabled(True)
                 self.lowPassNotch.setEnabled(True)    
                 self.highPassNotch.clicked.connect(self.abrirGraficosMenu)
-                self.miGraficador.setType("HIGH_PASS_NOTCH")
+                self.highPassNotch.clicked.connect(self.setHighPassNotch)
                 self.lowPassNotch.clicked.connect(self.abrirGraficosMenu)   
-                self.miGraficador.setType("LOW_PASS_NOTCH")
+                self.lowPassNotch.clicked.connect(self.setLowPassNotch)
             else:
                 self.highPassNotch.setEnabled(False)
                 self.lowPassNotch.setEnabled(False)  
@@ -135,16 +133,32 @@ class ElectroGUI(FirstWindow.Ui_MainWindow, QtWidgets.QMainWindow):
             self.pasaTodoSegundoOrden.setEnabled(False)
             self.pasaBanda.setEnabled(False)
             self.notch.setEnabled(False)
+            self.highPassNotch.setEnabled(False)
+            self.lowPassNotch.setEnabled(False)  
 
 ###Estos metodos  corren el indice de la pestaña en la que estoy···
     def abrirMainMenu(self):
         self.mainMenu.setCurrentIndex(0)
+        self.textoGanancia = "0"
+        self.textoFrec = "0"
+        self.textoXsi = "0"
+        self.textoXsiz = "0"
+        self.textoWz = "0"
+        self.frecPrimerOrden.clear()
+        self.gananciaPrimerOrden.clear()
+        self.frecSegundoOrden.clear()
+        self.gananciaSegundoOrden.clear()
+        self.xsi.clear()
+        self.xsiz.clear()
+        self.omegaz.clear()
 
     def abrirPrimerOrdenMenu(self):
         self.mainMenu.setCurrentIndex(1)
+        self.miGraficador.setOrder(1)
 
     def abrirSegundoOrdenMenu(self):
         self.mainMenu.setCurrentIndex(2)
+        self.miGraficador.setOrder(2)
 
     def abrirGraficosMenu(self):
         self.mainMenu.setCurrentIndex(3)
@@ -158,18 +172,53 @@ class ElectroGUI(FirstWindow.Ui_MainWindow, QtWidgets.QMainWindow):
         elif text == "Pulso periódico":
             self.dependeDeEntrada.setCurrentIndex(2)
 
+###Estos metodos se comunican con mi graficador para generar los graficos al presionar la tecla graficar###
     def mostrarGraficoSalida(self):
         if self.entrada.currentIndex() == 0: ##estoy en senoidal
             self.miGraficador.plotResponseToSine([float(self.frecEntradaSen.text()), float(self.ampEntradaSen.text()), float(self.textoGanancia), float(self.textoFrec), float(self.textoXsi), float(self.textoWz), float(self.textoXsiz)])
-        elif self.entrada.currentIndex() == 1:
+        elif self.entrada.currentIndex() == 1: ##estoy en escalon
             self.miGraficador.plotResponseToHeaviside([float(self.ampEntradaEscalon.text()), float(self.textoGanancia),float(self.textoFrec), float(self.textoXsi), float(self.textoWz), float(self.textoXsiz)])
-        elif self.entrada.currentIndex() == 2:
+        elif self.entrada.currentIndex() == 2: ##estoy en pulso
             self.miGraficador.plotResponseToPulseTrain([float(self.ampEntradaPulso.text()), float(self.dutyCycle.text()), float(self.textoGanancia),float(self.textoFrec), float(self.textoXsi), float(self.textoWz), float(self.textoXsiz)])
+        self.ampEntradaEscalon.clear()
+        self.frecEntradaSen.clear()
+        self.ampEntradaSen.clear()
+        self.dutyCycle.clear()
+        self.ampEntradaPulso.clear()
+    def mostrarGraficoBode(self):
+        if self.eje_x.currentText() == "Hz":
+           hertz = True
+        else:
+            hertz = False
+        if self.eje_y.currentText() == "dBs":
+            db = True
+        else:
+            db = False
+        self.miGraficador.setGainUnit(db)
+        self.miGraficador.setFrequencyUnit(hertz)
+        self.miGraficador.plotBode([float(self.textoGanancia), float(self.textoFrec), float(self.textoXsi), float(self.textoXsiz), float(self.textoWz)])
 
-   ## def mostrarGraficoBode(self):
 
+    def setHighPass(self):
+        self.miGraficador.setType("HIGH_PASS")
 
+    def setLowPass(self):
+        self.miGraficador.setType("LOW_PASS")
 
+    def setPassAll(self):
+        self.miGraficador.setType("PASS_ALL")
+
+    def setBandPass(self):
+        self.miGraficador.setType("BAND_PASS")
+
+    def setNotch(self):
+        self.miGraficador.setType("NOTCH")
+
+    def setHighPassNotch(self):
+        self.miGraficador.setType("HIGH_PASS_NOTCH")
+
+    def setLowPassNotch(self):
+        self.miGraficador.setType("LOW_PASS_NOTCH")
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
