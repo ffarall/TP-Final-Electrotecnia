@@ -1113,7 +1113,7 @@ class Ui_MainWindow(object):
         self.label_9.setText(_translate("MainWindow", "                                    Ingrese el  ξ:   "))
         self.xsi.setPlaceholderText(_translate("MainWindow", "Ej: 0.8"))
         self.label_7.setText(_translate("MainWindow", "                                            Ganancia:"))
-        self.label_5.setText(_translate("MainWindow", "                                      Ingrese Wz:  "))
+        self.label_5.setText(_translate("MainWindow", "                                      Ingrese ωz:  "))
         self.label_6.setText(_translate("MainWindow", "                                        Ingrese ξz:  "))
         self.pasaAltosSegundoOrden.setText(_translate("MainWindow", "Pasa Altos"))
         self.pasaBajosSegundoOrden.setText(_translate("MainWindow", "Pasa Bajos"))

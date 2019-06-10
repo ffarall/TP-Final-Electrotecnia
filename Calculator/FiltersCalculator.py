@@ -29,20 +29,28 @@ class FiltersCalculator:
 
     def __init__(self):
         self.sys = 0 #Set as 0 just for initialisation.
+        self.G = 0
+        self.wp = 0
+        self.E = 0
+        self.wz = 0
+        self.Ez = 0
 
 
     def firstOrderFilter(self, filterType: str, parameters: list):
         '''
         Detects filter type and calls corresponding method to initialise self.sys
         '''
+        self.G = parameters[0]
+        self.wp = parameters[1]*2*numpy.pi
+
         if filterType == 'HIGH_PASS':
-            self.fstOrderHighPass(parameters[0], parameters[1])
+            self.fstOrderHighPass(self.G, self.wp)
             return True
         elif filterType == 'LOW_PASS':
-            self.fstOrderLowPass(parameters[0], parameters[1])
+            self.fstOrderLowPass(self.G, self.wp)
             return True
         elif filterType == 'ALL_PASS':
-            self.fstOrderAllPass(parameters[0], parameters[1])
+            self.fstOrderAllPass(self.G, self.wp)
             return True
         else:
             return False
@@ -52,26 +60,32 @@ class FiltersCalculator:
         '''
         Detects filter type and calls corresponding method to initialise self.sys
         '''
+        self.G = parameters[0]
+        self.wp = parameters[1]*2*numpy.pi
+        self.E = parameters[2]
+        self.wz = parameters[3]*2*numpy.pi
+        self.Ez = parameters[4]
+
         if filterType == 'HIGH_PASS':
-            self.sndOrderHighPass(parameters[0], parameters[1], parameters[2])
+            self.sndOrderHighPass(self.G, self.wp, self.E)
             return True
         elif filterType == 'LOW_PASS':
-            self.sndOrderLowPass(parameters[0], parameters[1], parameters[2])
+            self.sndOrderLowPass(self.G, self.wp, self.E)
             return True
         elif filterType == 'ALL_PASS':
-            self.sndOrderAllPass(parameters[0], parameters[1], parameters[2])
+            self.sndOrderAllPass(self.G, self.wp, self.E)
             return True
         elif filterType == 'BAND_PASS':
-            self.sndOrderBandPass(parameters[0], parameters[1], parameters[2])
+            self.sndOrderBandPass(self.G, self.wp, self.E)
             return True
         elif filterType == 'NOTCH':
-            self.sndOrderNotch(parameters[0], parameters[1], parameters[2])
+            self.sndOrderNotch(self.G, self.wp, self.E)
             return True
         elif filterType == 'LOW_PASS_NOTCH':
-            self.sndOrderLowPassNotch(parameters[0], parameters[1], parameters[2], parameters[3], parameters[4])
+            self.sndOrderLowPassNotch(self.G, self.wp, self.E, self.wz, self.Ez)
             return True
         elif filterType == 'HIGH_PASS_NOTCH':
-            self.sndOrderHighPassNotch(parameters[0], parameters[1], parameters[2], parameters[3], parameters[4])
+            self.sndOrderHighPassNotch(self.G, self.wp, self.E, self.wz, self.Ez)
             return True
         else:
             return False
@@ -189,10 +203,8 @@ class FiltersCalculator:
         3-tuple with T (1D ndarray with the time values for the output), yout (1D ndarray 
         with the system's response) and xout (ndarray the time evolution of the state vector)
         '''
-        Fs = 8000
-        sample = 800
-        t = numpy.arange(sample)
-        x = A*numpy.sin(2 * numpy.pi * f * t / Fs)
+        t = numpy.linspace(0, 10*(1/f), 5000)
+        x = A*numpy.sin(2 * numpy.pi * f * t)
 
         return self.sys.output(x, t)
 
@@ -203,8 +215,7 @@ class FiltersCalculator:
         3-tuple with T (1D ndarray with the time values for the output), yout (1D ndarray 
         with the system's response) and xout (ndarray the time evolution of the state vector)
         '''
-        sample = 100
-        t = numpy.linspace(0, 100, 5000)
+        t = numpy.linspace(0, 5*(1/self.wp), 5000)
         x = A * (numpy.sign(t) + 1)
 
         return self.sys.output(x, t)
@@ -216,9 +227,8 @@ class FiltersCalculator:
         3-tuple with T (1D ndarray with the time values for the output), yout (1D ndarray 
         with the system's response) and xout (ndarray the time evolution of the state vector)
         '''
-        T=10
-        N=10
-        t = numpy.linspace(0, 100, 5000)
+        T=5*(1/self.wp)
+        t = numpy.linspace(0, 50*(1/self.wp), 5000)
         x=signal.square(2 * numpy.pi * (1/T) * t, dc)
 
         return self.sys.output(x, t)
