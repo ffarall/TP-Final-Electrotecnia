@@ -233,11 +233,11 @@ class ElectroGUI(FirstWindow.Ui_MainWindow, QtWidgets.QMainWindow):
 ###Estos metodos se comunican con mi graficador para generar los graficos al presionar la tecla graficar###
     def mostrarGraficoSalida(self):
         if self.entrada.currentIndex() == 0: ##estoy en senoidal
-            self.miGraficador.plotResponseToSine([float(self.frecEntradaSen.text()), float(self.ampEntradaSen.text()), float(self.textoGananciaMax), float(self.textoFrec), float(self.textoXsi), float(self.textoWz), float(self.textoXsiz)])
+            self.miGraficador.plotResponseToSine([float(self.frecEntradaSen.text()), float(self.ampEntradaSen.text()), float(self.textoGananciaMax),float(self.textoGananciaBanda), float(self.textoFrec), float(self.textoXsi), float(self.textoWz), float(self.textoXsiz)])
         elif self.entrada.currentIndex() == 1: ##estoy en escalon
-            self.miGraficador.plotResponseToHeaviside([float(self.ampEntradaEscalon.text()), float(self.textoGananciaMax),float(self.textoFrec), float(self.textoXsi), float(self.textoWz), float(self.textoXsiz)])
+            self.miGraficador.plotResponseToHeaviside([float(self.ampEntradaEscalon.text()), float(self.textoGananciaMax),float(self.textoGananciaBanda),float(self.textoFrec), float(self.textoXsi), float(self.textoWz), float(self.textoXsiz)])
         elif self.entrada.currentIndex() == 2: ##estoy en pulso
-            self.miGraficador.plotResponseToPulseTrain([float(self.ampEntradaPulso.text()), float(self.dutyCycle.text()), float(self.textoGananciaMax),float(self.textoFrec), float(self.textoXsi), float(self.textoWz), float(self.textoXsiz)])
+            self.miGraficador.plotResponseToPulseTrain([float(self.frecEntradaPulso.text()),float(self.ampEntradaPulso.text()), float(self.dutyCycle.text()), float(self.textoGananciaMax),float(self.textoGananciaBanda),float(self.textoFrec), float(self.textoXsi), float(self.textoWz), float(self.textoXsiz)])
         self.ampEntradaEscalon.clear()
         self.frecEntradaSen.clear()
         self.ampEntradaSen.clear()
