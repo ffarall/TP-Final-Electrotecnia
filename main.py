@@ -7,3 +7,4 @@ app = QtWidgets.QApplication(sys.argv)
 qt_app = ElectroGUI()
 qt_app.show()
 sys.exit(app.exec_())
+
