@@ -221,11 +221,12 @@ class FiltersCalculator:
         return self.sys.output(x, t)
 
 
-    def getResponseToPulseTrain(self, A, dc):
+    def getResponseToPulseTrain(self, f, A, dc):
         '''
-        Returns data to plot a time response to a pulse train of amplitude A as a 
-        3-tuple with T (1D ndarray with the time values for the output), yout (1D ndarray 
-        with the system's response) and xout (ndarray the time evolution of the state vector)
+         Returns data to plot a time response to a pulse train of amplitude A, frequency f and
+        duty cycle dc, as a 3-tuple with T (1D ndarray with the time values for the output),
+        yout (1D ndarray with the system's response) and xout (ndarray the time evolution of
+        the state vector)
         '''
         t = numpy.linspace(0, 10*(1/f), 5000)
         x=signal.square(2 * numpy.pi * f * t, dc)
