@@ -12,12 +12,12 @@ class FiltersGrapher:
     - Second order filter:
         Can be HIGH_PASS, LOW_PASS, ALL_PASS, BAND_PASS, NOTCH, LOW_PASS_NOTCH, HIGH_PASS_NOTCH.
     - Plot like this:
-        myFiltersGrapher.plotResponseToSine([f, A, G, wp, E, wz, Ez])
-        myFiltersGrapher.plotResponseToHeaviside([A, G, wp, E, wz, Ez])
-        myFiltersGrapher.plotResponseToImpulse([A, G, wp, E, wz, Ez])
-        myFiltersGrapher.plotResponseToPulse([A, dc, G, wp, E, wz, Ez])
-        myFiltersGrapher.plotResponseToPulseTrain([A, dc, G, wp, E, wz, Ez])
-        myFiltersGrapher.plotBode([G, wp, E, wz, Ez])
+        myFiltersGrapher.plotResponseToSine([f, A, maxG, bandG, wp, E, wz, Ez])
+        myFiltersGrapher.plotResponseToHeaviside([A, maxG, bandG, wp, E, wz, Ez])
+        myFiltersGrapher.plotResponseToImpulse([A, maxG, bandG, wp, E, wz, Ez])
+        myFiltersGrapher.plotResponseToPulse([A, dc, maxG, bandG, wp, E, wz, Ez])
+        myFiltersGrapher.plotResponseToPulseTrain([f, A, dc, maxG, bandG, wp, E, wz, Ez])
+        myFiltersGrapher.plotBode([maxG, bandG, wp, E, wz, Ez])
         E is necessary for all second order filters.
         wz and Ez are only needed when type is LOW_PASS_NOTCH or HIGH_PASS_NOTCH.
     '''
@@ -121,12 +121,13 @@ class FiltersGrapher:
         t = 0
         y = 0
         if self.filterOrder == 1:
-            self.calculator.firstOrderFilter(self.filterType, args[2:])
-            t, y, output = self.calculator.getResponseToPulseTrain(args[0], args[1])
+            self.calculator.firstOrderFilter(self.filterType, args[3:])
+            t, y, output = self.calculator.getResponseToPulseTrain(args[0], args[1], args[2])
 
         elif self.filterOrder == 2:
-            self.calculator.secondOrderFilter(self.filterType, args[2:])
-            t, y, output = self.calculator.getResponseToPulseTrain(args[0], args[1])
+            self.calculator.secondOrderFilter(self.filterType, args[3:])           
+            t, y, output = self.calculator.getResponseToPulseTrain(args[0], args[1], args[2])
+
             
         plt.figure()
         plt.plot(t, y)
@@ -163,18 +164,18 @@ class FiltersGrapher:
 if __name__ == '__main__':
     grapher = FiltersGrapher()
     testTypes = ['HIGH_PASS', 'LOW_PASS', 'ALL_PASS']
-    for test in testTypes:
+    '''for test in testTypes:
         grapher.setType(test)
-        grapher.plotBode([20, 1, 1, 1, 1])
+        grapher.plotBode([100, 0, 1000, 0.1, 3000, 0.3])
         grapher.plotResponseToHeaviside([1, 10, 1, 1, 1, 1])
         grapher.plotResponseToPulseTrain([1, 0.5, 10, 1, 1, 1, 1])
-        grapher.plotResponseToSine([50, 1, 10, 1, 1, 1, 1])
+        grapher.plotResponseToSine([50, 1, 10, 1, 1, 1, 1])'''
 
     testTypes = ['HIGH_PASS', 'LOW_PASS', 'ALL_PASS', 'BAND_PASS', 'NOTCH', 'LOW_PASS_NOTCH', 'HIGH_PASS_NOTCH']
     grapher.setOrder(2)
     for test in testTypes:
         grapher.setType(test)
-        grapher.plotBode([20, 1, 3, 5, 2])
-        grapher.plotResponseToHeaviside([1, 10, 1, 3, 5, 2])
+        grapher.plotBode([100, 0, 1000, 0.1, 3000, 0.3])
+        '''grapher.plotResponseToHeaviside([1, 10, 1, 3, 5, 2])
         grapher.plotResponseToPulseTrain([1, 0.5, 10, 1, 3, 5, 2])
-        grapher.plotResponseToSine([50, 1, 10, 1, 3, 5, 2])
+        grapher.plotResponseToSine([50, 1, 10, 1, 3, 5, 2])'''

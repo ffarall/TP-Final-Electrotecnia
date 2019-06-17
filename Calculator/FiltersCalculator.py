@@ -1,4 +1,6 @@
 from scipy import signal
+from sympy.solvers import solve
+from sympy import Symbol
 import numpy
 
 class FiltersCalculator:
@@ -29,7 +31,8 @@ class FiltersCalculator:
 
     def __init__(self):
         self.sys = 0 #Set as 0 just for initialisation.
-        self.G = 0
+        self.maxG = 0
+        self.bandG = 0
         self.wp = 0
         self.E = 0
         self.wz = 0
@@ -40,17 +43,18 @@ class FiltersCalculator:
         '''
         Detects filter type and calls corresponding method to initialise self.sys
         '''
-        self.G = parameters[0]
-        self.wp = parameters[1]*2*numpy.pi
+        self.maxG = parameters[0]
+        self.bandG = parameters[1]
+        self.wp = parameters[2]*2*numpy.pi
 
         if filterType == 'HIGH_PASS':
-            self.fstOrderHighPass(self.G, self.wp)
+            self.fstOrderHighPass(self.maxG, self.bandG, self.wp)
             return True
         elif filterType == 'LOW_PASS':
-            self.fstOrderLowPass(self.G, self.wp)
+            self.fstOrderLowPass(self.maxG, self.bandG, self.wp)
             return True
         elif filterType == 'ALL_PASS':
-            self.fstOrderAllPass(self.G, self.wp)
+            self.fstOrderAllPass(self.maxG, self.bandG, self.wp)
             return True
         else:
             return False
@@ -60,126 +64,200 @@ class FiltersCalculator:
         '''
         Detects filter type and calls corresponding method to initialise self.sys
         '''
-        self.G = parameters[0]
-        self.wp = parameters[1]*2*numpy.pi
-        self.E = parameters[2]
-        self.wz = parameters[3]*2*numpy.pi
-        self.Ez = parameters[4]
+        self.maxG = parameters[0]
+        self.bandG = parameters[1]
+        self.wp = parameters[2]*2*numpy.pi
+        self.E = parameters[3]
+        self.wz = parameters[4]*2*numpy.pi
+        self.Ez = parameters[5]
 
         if filterType == 'HIGH_PASS':
-            self.sndOrderHighPass(self.G, self.wp, self.E)
+            self.sndOrderHighPass(self.maxG, self.bandG, self.wp, self.E)
             return True
         elif filterType == 'LOW_PASS':
-            self.sndOrderLowPass(self.G, self.wp, self.E)
+            self.sndOrderLowPass(self.maxG, self.bandG, self.wp, self.E)
             return True
         elif filterType == 'ALL_PASS':
-            self.sndOrderAllPass(self.G, self.wp, self.E)
+            self.sndOrderAllPass(self.maxG, self.bandG, self.wp, self.E)
             return True
         elif filterType == 'BAND_PASS':
-            self.sndOrderBandPass(self.G, self.wp, self.E)
+            self.sndOrderBandPass(self.maxG, self.bandG, self.wp, self.E)
             return True
         elif filterType == 'NOTCH':
-            self.sndOrderNotch(self.G, self.wp, self.E)
+            self.sndOrderNotch(self.maxG, self.bandG, self.wp, self.E)
             return True
         elif filterType == 'LOW_PASS_NOTCH':
-            self.sndOrderLowPassNotch(self.G, self.wp, self.E, self.wz, self.Ez)
+            self.sndOrderLowPassNotch(self.maxG, self.bandG, self.wp, self.E, self.wz, self.Ez)
             return True
         elif filterType == 'HIGH_PASS_NOTCH':
-            self.sndOrderHighPassNotch(self.G, self.wp, self.E, self.wz, self.Ez)
+            self.sndOrderHighPassNotch(self.maxG, self.bandG, self.wp, self.E, self.wz, self.Ez)
             return True
         else:
             return False
 
 
-    def fstOrderLowPass(self, G, wp):
+    def fstOrderLowPass(self, maxG, bandG, wp):
         '''
         Sets self.sys as a first order low-pass filter who's transfer function is:
         H(s) = K/((s/wp)+1)
         '''
-        K = G
+
+        if maxG != 0 and maxG != '':
+            K = maxG
+        else:
+            K = bandG
+
         self.sys = signal.lti([K], [1/wp, 1])
 
 
-    def fstOrderHighPass(self, G, wp):
+    def fstOrderHighPass(self, maxG, bandG, wp):
         '''
         Sets self.sys as a first order high-pass filter who's transfer function is:
         H(s) = K*s/((s/wp)+1)
         '''
-        K = G / wp
+
+        if maxG != 0 and maxG != '':
+            K = maxG / wp
+        else:
+            K = bandG / wp
+
         self.sys = signal.lti([K, 0], [1/wp, 1])
 
 
-    def fstOrderAllPass(self, G, wp):
+    def fstOrderAllPass(self, maxG, bandG, wp):
         '''
         Sets self.sys as a first order all-pass filter who's transfer function is:
         H(s) = K*((s/wp)-1)/((s/wp)+1)
         '''
-        K = G
+
+        if maxG != 0 and maxG != '':
+            K = maxG
+        else:
+            K = bandG
+
         self.sys = signal.lti([K/wp, -K], [1/wp, 1])
 
 
-    def sndOrderLowPass(self, G, wp, E):
+    def sndOrderLowPass(self, maxG, bandG, wp, E):
         '''
         Sets self.sys as a second order low-pass filter who's transfer function is:
         H(s) = K/((s/wp)^2+2(E/wp)*s+1)
         '''
-        K = G
+        Q = 1 / (2*E)
+        rootOfB = (wp**2 * numpy.sqrt(1 - 1 / (4 * Q**2))) / Q
+        if maxG != 0 and maxG != '':
+            if numpy.isnan(rootOfB):
+                K = maxG
+            else:
+                a0 = Symbol('a0', positive=True)
+                K = solve( a0 / rootOfB - maxG , a0)[0]
+        else:
+            K = bandG
+
         self.sys = signal.lti([K], [(1/wp)**2, 2*(E/wp), 1])
 
 
-    def sndOrderHighPass(self, G, wp, E):
+    def sndOrderHighPass(self, maxG, bandG, wp, E):
         '''
         Sets self.sys as a second order high-pass filter who's transfer function is:
         H(s) = K*s^2/((s/wp)^2+2(E/wp)*s+1)
         '''
-        K = G / (wp**2)
+        Q = 1 / (2*E)
+        rootOfB = (numpy.sqrt(1 - 1 / (4 * Q**2))) / Q
+        if maxG != 0 and maxG != '':
+            if numpy.isnan(rootOfB):
+                K = maxG / (wp**2)
+            else:
+                a0 = Symbol('a0', positive=True)
+                K = float(solve( a0 / rootOfB - maxG , a0)[0])
+        else:
+            K = bandG / (wp**2)
+            
         self.sys = signal.lti([K, 0, 0], [(1/wp)**2, 2*(E/wp), 1])
 
 
-    def sndOrderAllPass(self, G, wp, E):
+    def sndOrderAllPass(self, maxG, bandG, wp, E):
         '''
         Sets self.sys as a second order all-pass filter who's transfer function is:
         H(s) = K*((s/wp)^2-2(E/wp)*s+1)/((s/wp)^2+2(E/wp)*s+1)
         '''
-        K = G
+        if maxG != 0 and maxG != '':
+            K = maxG
+        else:
+            K = bandG
+
         self.sys = signal.lti([K*((1/wp)**2), -K*2*(E/wp), K], [(1/wp)**2, 2*(E/wp), 1])
 
 
-    def sndOrderBandPass(self, G, w0, E):
+    def sndOrderBandPass(self, maxG, bandG, w0, E):
         '''
         Sets self.sys as a second order band-pass filter who's transfer function is:
         H(s) = K*s/((s/wp)^2+2(E/wp)*s+1)
         '''
-        K = 2*E*G/w0
+        Q = 1 / (2*E)
+        rootOfB = w0 / Q
+        if maxG != 0 and maxG != '':
+            if numpy.isnan(rootOfB):
+                K = 2*E*maxG/w0
+            else:
+                a0 = Symbol('a0', positive=True)
+                K = solve( a0 / rootOfB - maxG , a0)[0]
+        else:
+            K = 2*E*bandG/w0
+
         self.sys = signal.lti([K, 0], [(1/w0)**2, 2*(E/w0), 1])
 
 
-    def sndOrderNotch(self, G, wp, E):
+    def sndOrderNotch(self, maxG, bandG, wp, E):
         '''
         Sets self.sys as a second order notch filter who's transfer function is:
         H(s) = K*((s/wp)^2+1)/((s/wp)^2+2(E/wp)*s+1)
         '''
-        K = G
+        if maxG != 0 and maxG != '':
+            K = maxG
+        else:
+            K = bandG
+
         self.sys = signal.lti([K*((1/wp)**2), K], [(1/wp)**2, 2*(E/wp), 1])
 
 
-    def sndOrderLowPassNotch(self, G, wp, E, wz, Ez):
+    def sndOrderLowPassNotch(self, maxG, bandG, wp, E, wz, Ez):
         '''
         Sets self.sys as a second order low-pass notch filter who's transfer function is:
         H(s) = K*((s/wz)^2+2(Ez/wz)*s+1)/((s/wp)^2+2(E/wp)*s+1)
         wz > wp WILL BE VALIDATED
         '''
-        K = G
+        Q = 1 / (2*E)
+        badassSquareRoot = numpy.sqrt( ((1 - (wz / wp)**2)**2 + (1 / Q**2) * (wz / wp)**2) / (1 - (1 / 4 * Q**2)))
+        if maxG != 0 and maxG != '':
+            if numpy.isnan(badassSquareRoot):
+                K = maxG
+            else:
+                a0 = Symbol('a0', positive=True)
+                K = solve( a0 * Q * badassSquareRoot , a0)[0]
+        else:
+            K = bandG
+
         self.sys = signal.lti([K*((1/wz)**2), K*2*(Ez/wz), K], [(1/wp)**2, 2*(E/wp), 1])
 
 
-    def sndOrderHighPassNotch(self, G, wp, E, wz, Ez):
+    def sndOrderHighPassNotch(self, maxG, bandG, wp, E, wz, Ez):
         '''
         Sets self.sys as a second order low-pass notch filter who's transfer function is:
         H(s) = K*((s/wz)^2+2(Ez/wz)*s+1)/((s/wp)^2+2(E/wp)*s+1)
         wz < wp WILL BE VALIDATED
         '''
-        K = G * (wz / wp)**2
+        Q = 1 / (2*E)
+        badassSquareRoot = numpy.sqrt( ((1 - (wz / wp)**2)**2 + (1 / Q**2) * (wz / wp)**2) / (1 - (1 / 4 * Q**2)))
+        if maxG != 0 and maxG != '':
+            if numpy.isnan(badassSquareRoot):
+                K = maxG * (wz / wp)**2
+            else:
+                a0 = Symbol('a0', positive=True)
+                K = solve( a0 * Q * badassSquareRoot , a0)[0]
+        else:
+            K = bandG * (wz / wp)**2
+
         self.sys = signal.lti([K*((1/wz)**2), K*2*(Ez/wz), K], [(1/wp)**2, 2*(E/wp), 1])
 
 
