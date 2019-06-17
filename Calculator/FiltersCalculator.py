@@ -150,7 +150,7 @@ class FiltersCalculator:
                 K = maxG
             else:
                 a0 = Symbol('a0', positive=True)
-                K = solve( a0 / rootOfB - maxG , a0)[0]
+                K = solve( a0 * wp**2 / rootOfB - maxG , a0)[0]
         else:
             K = bandG
 
@@ -169,7 +169,7 @@ class FiltersCalculator:
                 K = maxG / (wp**2)
             else:
                 a0 = Symbol('a0', positive=True)
-                K = float(solve( a0 / rootOfB - maxG , a0)[0])
+                K = float(solve( a0 * wp**2 / rootOfB - maxG , a0)[0])
         else:
             K = bandG / (wp**2)
             
@@ -201,7 +201,7 @@ class FiltersCalculator:
                 K = 2*E*maxG/w0
             else:
                 a0 = Symbol('a0', positive=True)
-                K = solve( a0 / rootOfB - maxG , a0)[0]
+                K = solve( a0 * w0**2 / rootOfB - maxG , a0)[0]
         else:
             K = 2*E*bandG/w0
 
@@ -234,7 +234,7 @@ class FiltersCalculator:
                 K = maxG
             else:
                 a0 = Symbol('a0', positive=True)
-                K = solve( a0 * Q * badassSquareRoot , a0)[0]
+                K = solve( a0 * wp**2 * Q * badassSquareRoot , a0)[0]
         else:
             K = bandG
 
@@ -254,7 +254,7 @@ class FiltersCalculator:
                 K = maxG * (wz / wp)**2
             else:
                 a0 = Symbol('a0', positive=True)
-                K = solve( a0 * Q * badassSquareRoot , a0)[0]
+                K = solve( a0 * wp**2 * Q * badassSquareRoot , a0)[0]
         else:
             K = bandG * (wz / wp)**2
 
