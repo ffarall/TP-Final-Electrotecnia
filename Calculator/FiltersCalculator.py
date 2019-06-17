@@ -150,7 +150,7 @@ class FiltersCalculator:
                 K = maxG
             else:
                 a0 = Symbol('a0', positive=True)
-                K = solve( a0 * wp**2 / rootOfB - maxG , a0)[0]
+                K = float(solve( a0 * wp**2 / rootOfB - maxG , a0)[0])
         else:
             K = bandG
 
@@ -201,7 +201,7 @@ class FiltersCalculator:
                 K = 2*E*maxG/w0
             else:
                 a0 = Symbol('a0', positive=True)
-                K = solve( a0 * w0**2 / rootOfB - maxG , a0)[0]
+                K = float(solve( a0 * w0**2 / rootOfB - maxG , a0)[0])
         else:
             K = 2*E*bandG/w0
 
@@ -213,8 +213,14 @@ class FiltersCalculator:
         Sets self.sys as a second order notch filter who's transfer function is:
         H(s) = K*((s/wp)^2+1)/((s/wp)^2+2(E/wp)*s+1)
         '''
+        Q = 1 / (2*E)
+        badassSquareRoot = numpy.sqrt( (1 / (Q**2)) / (1 - (1 / (4 * Q**2))))
         if maxG != 0 and maxG != '':
-            K = maxG
+            if numpy.isnan(badassSquareRoot):
+                K = maxG
+            else:
+                a0 = Symbol('a0', positive=True)
+                K = float(solve( a0 * Q * badassSquareRoot - maxG , a0)[0])
         else:
             K = bandG
 
@@ -228,13 +234,13 @@ class FiltersCalculator:
         wz > wp WILL BE VALIDATED
         '''
         Q = 1 / (2*E)
-        badassSquareRoot = numpy.sqrt( ((1 - (wz / wp)**2)**2 + (1 / Q**2) * (wz / wp)**2) / (1 - (1 / 4 * Q**2)))
+        badassSquareRoot = numpy.sqrt( ((1 - (wz / wp)**2)**2 + (1 / (Q**2)) * (wz / wp)**2) / (1 - (1 / (4 * Q**2))))
         if maxG != 0 and maxG != '':
             if numpy.isnan(badassSquareRoot):
                 K = maxG
             else:
                 a0 = Symbol('a0', positive=True)
-                K = solve( a0 * wp**2 * Q * badassSquareRoot , a0)[0]
+                K = float(solve( a0 * wp**2 * Q * badassSquareRoot - maxG , a0)[0])
         else:
             K = bandG
 
@@ -248,13 +254,13 @@ class FiltersCalculator:
         wz < wp WILL BE VALIDATED
         '''
         Q = 1 / (2*E)
-        badassSquareRoot = numpy.sqrt( ((1 - (wz / wp)**2)**2 + (1 / Q**2) * (wz / wp)**2) / (1 - (1 / 4 * Q**2)))
+        badassSquareRoot = numpy.sqrt( ((1 - (wz / wp)**2)**2 + (1 / (Q**2)) * (wz / wp)**2) / (1 - (1 / (4 * Q**2))))
         if maxG != 0 and maxG != '':
             if numpy.isnan(badassSquareRoot):
                 K = maxG * (wz / wp)**2
             else:
                 a0 = Symbol('a0', positive=True)
-                K = solve( a0 * wp**2 * Q * badassSquareRoot , a0)[0]
+                K = float(solve( a0 * wp**2 * Q * badassSquareRoot - maxG , a0)[0])
         else:
             K = bandG * (wz / wp)**2
 
