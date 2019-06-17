@@ -228,9 +228,8 @@ class FiltersCalculator:
         yout (1D ndarray with the system's response) and xout (ndarray the time evolution of
         the state vector)
         '''
-        T=5*(1/self.wp)
-        t = numpy.linspace(0, 50*(1/self.wp), 5000)
-        x=signal.square(2 * numpy.pi * (1/T) * t, dc)
+        t = numpy.linspace(0, 10*(1/f), 5000)
+        x=signal.square(2 * numpy.pi * f * t, dc)
 
         return self.sys.output(x, t)
 
