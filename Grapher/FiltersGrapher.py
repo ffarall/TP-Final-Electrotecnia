@@ -12,12 +12,12 @@ class FiltersGrapher:
     - Second order filter:
         Can be HIGH_PASS, LOW_PASS, ALL_PASS, BAND_PASS, NOTCH, LOW_PASS_NOTCH, HIGH_PASS_NOTCH.
     - Plot like this:
-        myFiltersGrapher.plotResponseToSine([f, A, maxG, bandG, wp, E, wz, Ez])
-        myFiltersGrapher.plotResponseToHeaviside([A, maxG, bandG, wp, E, wz, Ez])
-        myFiltersGrapher.plotResponseToImpulse([A, maxG, bandG, wp, E, wz, Ez])
-        myFiltersGrapher.plotResponseToPulse([A, dc, maxG, bandG, wp, E, wz, Ez])
-        myFiltersGrapher.plotResponseToPulseTrain([f, A, dc, maxG, bandG, wp, E, wz, Ez])
-        myFiltersGrapher.plotBode([maxG, bandG, wp, E, wz, Ez])
+        myFiltersGrapher.plotResponseToSine([f, A, G, wp, E, wz, Ez])
+        myFiltersGrapher.plotResponseToHeaviside([A, G, wp, E, wz, Ez])
+        myFiltersGrapher.plotResponseToImpulse([A, G, wp, E, wz, Ez])
+        myFiltersGrapher.plotResponseToPulse([A, dc, G, wp, E, wz, Ez])
+        myFiltersGrapher.plotResponseToPulseTrain([A, dc, G, wp, E, wz, Ez])
+        myFiltersGrapher.plotBode([G, wp, E, wz, Ez])
         E is necessary for all second order filters.
         wz and Ez are only needed when type is LOW_PASS_NOTCH or HIGH_PASS_NOTCH.
     '''
@@ -49,12 +49,6 @@ class FiltersGrapher:
     def plotResponseToSine(self, args: list):
         t = 0
         y = 0
-
-        if args[2] == 0 or args[2] == '':
-            args.pop(2)
-        elif args[3] == 0 or args[3] == '':
-            args.pop(3)
-
         if self.filterOrder == 1:
             self.calculator.firstOrderFilter(self.filterType, args[2:])
             t, y, output = self.calculator.getResponseToSine(args[0], args[1])
@@ -72,12 +66,6 @@ class FiltersGrapher:
     def plotResponseToImpulse(self, args: list):
         t = 0
         y = 0
-
-        if args[1] == 0 or args[1] == '':
-            args.pop(1)
-        elif args[2] == 0 or args[2] == '':
-            args.pop(2)
-
         if self.filterOrder == 1:
             self.calculator.firstOrderFilter(self.filterType, args[1:])
             t, y = self.calculator.getResponseToImpulse(args[0])
@@ -96,12 +84,6 @@ class FiltersGrapher:
     def plotResponseToPulse(self, args: list):
         t = 0
         y = 0
-
-        if args[2] == 0 or args[2] == '':
-            args.pop(2)
-        elif args[3] == 0 or args[3] == '':
-            args.pop(3)
-
         if self.filterOrder == 1:
             self.calculator.firstOrderFilter(self.filterType, args[2:])
             t, y = self.calculator.getResponseToPulse(args[0], args[1])
@@ -120,12 +102,6 @@ class FiltersGrapher:
     def plotResponseToHeaviside(self, args: list):
         t = 0
         y = 0
-
-        if args[1] == 0 or args[1] == '':
-            args.pop(1)
-        elif args[2] == 0 or args[2] == '':
-            args.pop(2)
-
         if self.filterOrder == 1:
             self.calculator.firstOrderFilter(self.filterType, args[1:])
             t, y, output= self.calculator.getResponseToHeaviside(args[0])
@@ -144,19 +120,13 @@ class FiltersGrapher:
     def plotResponseToPulseTrain(self, args: list):
         t = 0
         y = 0
-
-        if args[3] == 0 or args[3] == '':
-            args.pop(3)
-        elif args[4] == 0 or args[4] == '':
-            args.pop(4)
-
         if self.filterOrder == 1:
-            self.calculator.firstOrderFilter(self.filterType, args[3:])
-            t, y, output = self.calculator.getResponseToPulseTrain(args[0], args[1], args[2])
+            self.calculator.firstOrderFilter(self.filterType, args[2:])
+            t, y, output = self.calculator.getResponseToPulseTrain(args[0], args[1])
 
         elif self.filterOrder == 2:
             self.calculator.secondOrderFilter(self.filterType, args[2:])
-            t, y, output = self.calculator.getResponseToPulseTrain(args[0], args[1], args[2])
+            t, y, output = self.calculator.getResponseToPulseTrain(args[0], args[1])
             
         plt.figure()
         plt.plot(t, y)
@@ -169,12 +139,6 @@ class FiltersGrapher:
         w = 0
         g = 0
         phase = 0
-
-        if args[0] == 0 or args[0] == '':
-            args.pop(0)
-        elif args[1] == 0 or args[1] == '':
-            args.pop(1)
-
         if self.filterOrder == 1:
             self.calculator.firstOrderFilter(self.filterType, args)
             w, g, phase = self.calculator.getBode(self.usingHertz, self.usingdB)
