@@ -213,18 +213,12 @@ class FiltersCalculator:
         Sets self.sys as a second order notch filter who's transfer function is:
         H(s) = K*((s/wp)^2+1)/((s/wp)^2+2(E/wp)*s+1)
         '''
-        Q = 1 / (2*E)
-        badassSquareRoot = numpy.sqrt( (1 / (Q**2)) / (1 - (1 / (4 * Q**2))))
         if maxG != 0 and maxG != '':
-            if numpy.isnan(badassSquareRoot):
-                K = maxG
-            else:
-                a0 = Symbol('a0', positive=True)
-                K = float(solve( a0 * Q * badassSquareRoot - maxG , a0)[0])
+            K = maxG
         else:
             K = bandG
 
-        self.sys = signal.lti([K*((1/wp)**2), K], [(1/wp)**2, 2*(E/wp), 1])
+        self.sys = signal.lti([K*((1/wp)**2), 0, K], [(1/wp)**2, 2*(E/wp), 1])
 
 
     def sndOrderLowPassNotch(self, maxG, bandG, wp, E, wz, Ez):

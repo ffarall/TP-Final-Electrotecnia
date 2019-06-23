@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import sys
+import tkinter
+
 sys.path.insert(0, 'C:/Users/facun/OneDrive/Desktop/ITBA/C4 - Electrotecnia/TP Final')
 from Calculator.FiltersCalculator import FiltersCalculator
 
@@ -27,6 +29,7 @@ class FiltersGrapher:
         self.filterOrder = order
         self.usingHertz = usingHertz
         self.usingdB = usingdB
+        self.errMessage = ''
         self.calculator = FiltersCalculator()
 
 
@@ -47,21 +50,23 @@ class FiltersGrapher:
 
 
     def plotResponseToSine(self, args: list):
-        t = 0
-        y = 0
-        if self.filterOrder == 1:
-            self.calculator.firstOrderFilter(self.filterType, args[2:])
-            t, y, output = self.calculator.getResponseToSine(args[0], args[1])
+        if self.validateResponseToSine(args):
+            t = 0
+            y = 0
+            if self.filterOrder == 1:
+                self.calculator.firstOrderFilter(self.filterType, args[2:])
+                t, y, output = self.calculator.getResponseToSine(args[0], args[1])
 
-        elif self.filterOrder == 2:
-            self.calculator.secondOrderFilter(self.filterType, args[2:])
-            t, y, output = self.calculator.getResponseToSine(args[0], args[1])
+            elif self.filterOrder == 2:
+                self.calculator.secondOrderFilter(self.filterType, args[2:])
+                t, y, output = self.calculator.getResponseToSine(args[0], args[1])
 
-        plt.figure()
-        plt.plot(t, y)
-        plt.xlabel('Tiempo (s)')
-        plt.ylabel('Respuesta a senoidal')
-        plt.show()
+            plt.figure()
+            plt.plot(t, y)
+            plt.xlabel('Tiempo (s)')
+            plt.ylabel('Respuesta a senoidal')
+            plt.show()
+
 
     def plotResponseToImpulse(self, args: list):
         t = 0
@@ -100,74 +105,108 @@ class FiltersGrapher:
 
 
     def plotResponseToHeaviside(self, args: list):
-        t = 0
-        y = 0
-        if self.filterOrder == 1:
-            self.calculator.firstOrderFilter(self.filterType, args[1:])
-            t, y, output= self.calculator.getResponseToHeaviside(args[0])
+        if self.validateResponseToHeaviside(args):
+            t = 0
+            y = 0
+            if self.filterOrder == 1:
+                self.calculator.firstOrderFilter(self.filterType, args[1:])
+                t, y, output= self.calculator.getResponseToHeaviside(args[0])
 
-        elif self.filterOrder == 2:
-            self.calculator.secondOrderFilter(self.filterType, args[1:])
-            t, y, output = self.calculator.getResponseToHeaviside(args[0])
-            
-        plt.figure()
-        plt.plot(t, y)
-        plt.xlabel('Tiempo (s)')
-        plt.ylabel('Respuesta al escalón')
-        plt.show()
+            elif self.filterOrder == 2:
+                self.calculator.secondOrderFilter(self.filterType, args[1:])
+                t, y, output = self.calculator.getResponseToHeaviside(args[0])
+                
+            plt.figure()
+            plt.plot(t, y)
+            plt.xlabel('Tiempo (s)')
+            plt.ylabel('Respuesta al escalón')
+            plt.show()
 
 
     def plotResponseToPulseTrain(self, args: list):
-        t = 0
-        y = 0
-        if self.filterOrder == 1:
-            self.calculator.firstOrderFilter(self.filterType, args[3:])
-            t, y, output = self.calculator.getResponseToPulseTrain(args[0], args[1], args[2])
+        if self.validateResponseToPulseTrain(args):
+            t = 0
+            y = 0
+            if self.filterOrder == 1:
+                self.calculator.firstOrderFilter(self.filterType, args[3:])
+                t, y, output = self.calculator.getResponseToPulseTrain(args[0], args[1], args[2])
 
-        elif self.filterOrder == 2:
-            self.calculator.secondOrderFilter(self.filterType, args[3:])           
-            t, y, output = self.calculator.getResponseToPulseTrain(args[0], args[1], args[2])
+            elif self.filterOrder == 2:
+                self.calculator.secondOrderFilter(self.filterType, args[3:])           
+                t, y, output = self.calculator.getResponseToPulseTrain(args[0], args[1], args[2])
 
-            
-        plt.figure()
-        plt.plot(t, y)
-        plt.xlabel('Tiempo (s)')
-        plt.ylabel('Respuesta al tren de pulsos')
-        plt.show()
+                
+            plt.figure()
+            plt.plot(t, y)
+            plt.xlabel('Tiempo (s)')
+            plt.ylabel('Respuesta al tren de pulsos')
+            plt.show()
 
 
     def plotBode(self, args: list):
-        w = 0
-        g = 0
-        phase = 0
-        if self.filterOrder == 1:
-            self.calculator.firstOrderFilter(self.filterType, args)
-            w, g, phase = self.calculator.getBode(self.usingHertz, self.usingdB)
+        if self.validateBode(args):
+            w = 0
+            g = 0
+            phase = 0
+            if self.filterOrder == 1:
+                self.calculator.firstOrderFilter(self.filterType, args)
+                w, g, phase = self.calculator.getBode(self.usingHertz, self.usingdB)
 
-        elif self.filterOrder == 2:
-            self.calculator.secondOrderFilter(self.filterType, args)
-            w, g, phase = self.calculator.getBode(self.usingHertz, self.usingdB)
+            elif self.filterOrder == 2:
+                self.calculator.secondOrderFilter(self.filterType, args)
+                w, g, phase = self.calculator.getBode(self.usingHertz, self.usingdB)
 
-        plt.figure()
-        plt.semilogx(w, g)
-        if self.usingHertz:
-            plt.xlabel('Frecuencia (Hz)')
-        else:
-            plt.xlabel('Frecuencia (rad/s)')
-        if self.usingdB:
-            plt.ylabel('Ganancia (dB)')
-        else:
-            plt.ylabel('Ganancia (respuesta/entrada)')
-        plt.show()
+            plt.figure()
+            plt.semilogx(w, g)
+            if self.usingHertz:
+                plt.xlabel('Frecuencia (Hz)')
+            else:
+                plt.xlabel('Frecuencia (rad/s)')
+            if self.usingdB:
+                plt.ylabel('Ganancia (dB)')
+            else:
+                plt.ylabel('Ganancia (respuesta/entrada)')
+            plt.show()
+
+
+    def showErrMessage(self, message: str):
+        window = tkinter.Tk()
+        window.eval('tk::PlaceWindow %s center' % window.winfo_toplevel())
+
+        tkinter.messagebox.showerror('Error al ingresar datos', '')
+
+        window.deiconify()
+        window.destroy()
+        window.quit()
+
+
+    def validateResponseToSine(self, args: list):
+        pass
+
+
+    def validateResponseToImpulse(self, args: list):
+        pass
+
+    
+    def validateResponseToHeaviside(self, args: list):
+        pass
+
+
+    def validateResponseToPulseTrain(self, args: list):
+        pass
+
+
+    def validateBode(self, args: list):
+        pass
 
 
 if __name__ == '__main__':
     grapher = FiltersGrapher()
     testTypes = ['HIGH_PASS', 'LOW_PASS', 'ALL_PASS']
-    '''for test in testTypes:
+    for test in testTypes:
         grapher.setType(test)
         grapher.plotBode([100, 0, 1000, 0.1, 3000, 0.3])
-        grapher.plotResponseToHeaviside([1, 10, 1, 1, 1, 1])
+        '''grapher.plotResponseToHeaviside([1, 10, 1, 1, 1, 1])
         grapher.plotResponseToPulseTrain([1, 0.5, 10, 1, 1, 1, 1])
         grapher.plotResponseToSine([50, 1, 10, 1, 1, 1, 1])'''
 
