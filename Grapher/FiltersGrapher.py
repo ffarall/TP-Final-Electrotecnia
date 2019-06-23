@@ -169,11 +169,11 @@ class FiltersGrapher:
             plt.show()
 
 
-    def showErrMessage(self, message: str):
+    def showErrMessage(self):
         window = tkinter.Tk()
         window.eval('tk::PlaceWindow %s center' % window.winfo_toplevel())
 
-        tkinter.messagebox.showerror('Error al ingresar datos', '')
+        tkinter.messagebox.showerror('Error al ingresar datos', self.errMessage)
 
         window.deiconify()
         window.destroy()
@@ -181,23 +181,109 @@ class FiltersGrapher:
 
 
     def validateResponseToSine(self, args: list):
-        pass
+        sineFrec = args[0]
+        sineAmp = args[1]
+
+        if sineFrec > 0:
+            if sineAmp > 0:
+                return self.validateOrderAndType(args[2:])
+            else:
+                self.errMessage = 'La amplitud ingresada para el seno de entrada debe ser mayor a 0.'
+                self.showErrMessage()
+                return False
+        else:
+            self.errMessage = 'La frecuencia ingresada para el seno de entrada debe ser mayor a 0.'
+            self.showErrMessage()
+            return False
 
 
     def validateResponseToImpulse(self, args: list):
-        pass
+        impulseAmp = args[0]
+
+        if impulseAmp > 0:
+            return self.validateOrderAndType(args[1:])
+        else:
+            self.errMessage = 'La amplitud ingresada para el Delta de entrada debe ser mayor a 0.'
+            self.showErrMessage()
+            return False
 
     
     def validateResponseToHeaviside(self, args: list):
-        pass
+        heavisideAmp = args[0]
+
+        if heavisideAmp > 0:
+            return self.validateOrderAndType(args[1:])
+        else:
+            self.errMessage = 'La amplitud ingresada para el Delta de entrada debe ser mayor a 0.'
+            self.showErrMessage()
+            return False
 
 
     def validateResponseToPulseTrain(self, args: list):
-        pass
+        pulseTrainFrec = args[0]
+        pulseTrainAmp = args[1]
+        pulseTrainDC = args[2]
+
+        if pulseTrainFrec > 0:
+            if pulseTrainAmp > 0:
+                if pulseTrainDC > 0 and pulseTrainDC < 1 :
+                    return self.validateOrderAndType(args[3:])
+                else:
+                    self.errMessage = 'El duty cycle ingresado no se encuentra en el intervalo (0;1).'
+                    self.showErrMessage()
+                    return False
+            else:
+                self.errMessage = 'La amplitud ingresada para el seno de entrada debe ser mayor a 0.'
+                self.showErrMessage()
+                return False
+        else:
+            self.errMessage = 'La frecuencia ingresada para el seno de entrada debe ser mayor a 0.'
+            self.showErrMessage()
+            return False
 
 
     def validateBode(self, args: list):
-        pass
+        return self.validateOrderAndType(args)
+
+
+    def validateOrderAndType(self, args: list):
+        if self.filterOrder == 1:
+            G = args[0]
+            wp = args[1]
+
+            if G > 0:
+                if wp > 0:
+                    return True
+                else:
+                    self.errMessage = 'La frecuencia de corte ingresada debe ser mayor a 0.'
+                    self.showErrMessage()
+                    return False
+            else:
+                self.errMessage = 'La ganancia ingresada debe ser mayor a 0.'
+                self.showErrMessage()
+                return False
+
+        elif self.filterOrder == 2:
+            G = args[0]
+            wp = args[1]
+            E = args[2]
+
+            if G > 0:
+                if wp > 0:
+                    if E > 0:
+                        return True
+                    else:
+                        self.errMessage = 'El coeficiente de amortiguamiento ingresado debe ser mayor a 0.'
+                        self.showErrMessage()
+                        return False
+                else:
+                    self.errMessage = 'La frecuencia de corte ingresada debe ser mayor a 0.'
+                    self.showErrMessage()
+                    return False
+            else:
+                self.errMessage = 'La ganancia ingresada debe ser mayor a 0.'
+                self.showErrMessage()
+                return False
 
 
 if __name__ == '__main__':
