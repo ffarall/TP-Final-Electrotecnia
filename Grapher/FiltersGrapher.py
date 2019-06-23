@@ -172,6 +172,7 @@ class FiltersGrapher:
     def showErrMessage(self):
         window = tkinter.Tk()
         window.eval('tk::PlaceWindow %s center' % window.winfo_toplevel())
+        window.withdraw()
 
         tkinter.messagebox.showerror('Error al ingresar datos', self.errMessage)
 
@@ -248,8 +249,11 @@ class FiltersGrapher:
 
     def validateOrderAndType(self, args: list):
         if self.filterOrder == 1:
-            G = args[0]
-            wp = args[1]
+            if args[0] != 0 and args[0] != '':
+                G = args[0]
+            else:
+                g = args[1]
+            wp = args[2]
 
             if G > 0:
                 if wp > 0:
@@ -264,9 +268,12 @@ class FiltersGrapher:
                 return False
 
         elif self.filterOrder == 2:
-            G = args[0]
-            wp = args[1]
-            E = args[2]
+            if args[0] != 0 and args[0] != '':
+                G = args[0]
+            else:
+                g = args[1]
+            wp = args[2]
+            E = args[3]
 
             if G > 0:
                 if wp > 0:
