@@ -255,7 +255,7 @@ class ElectroGUI(FirstWindow.Ui_MainWindow, QtWidgets.QMainWindow):
             db = False
         self.miGraficador.setGainUnit(db)
         self.miGraficador.setFrequencyUnit(hertz)
-        self.miGraficador.plotBode([float(self.textoGananciaMax), float(self.textoFrec), float(self.textoXsi), float(self.textoXsiz), float(self.textoWz)])
+        self.miGraficador.plotBode([float(self.textoGananciaMax), float(self.textoGananciaBanda), float(self.textoFrec), float(self.textoXsi), float(self.textoXsiz), float(self.textoWz)])
 
     def setHighPass(self):
         self.miGraficador.setType("HIGH_PASS")
