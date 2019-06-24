@@ -1,7 +1,7 @@
 import PyQt5 as pyqt
 import sys
-sys.path.insert(0, 'C:/Users/gonzalo/Desktop/ITBA/ELECTROTECNIA/tp final/TP-Final-Electrotecnia')
-#sys.path.insert(0, 'C:/Users/facun/OneDrive/Desktop/ITBA/C4 - Electrotecnia/TP Final')
+#sys.path.insert(0, 'C:/Users/gonzalo/Desktop/ITBA/ELECTROTECNIA/tp final/TP-Final-Electrotecnia')
+sys.path.insert(0, 'C:/Users/facun/OneDrive/Desktop/ITBA/C4 - Electrotecnia/TP Final')
 import FirstWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Grapher.FiltersGrapher import FiltersGrapher
