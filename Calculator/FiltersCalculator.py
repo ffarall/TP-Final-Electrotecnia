@@ -87,11 +87,17 @@ class FiltersCalculator:
             self.sndOrderNotch(self.maxG, self.bandG, self.wp, self.E)
             return True
         elif filterType == 'LOW_PASS_NOTCH':
-            self.sndOrderLowPassNotch(self.maxG, self.bandG, self.wp, self.E, self.wz, self.Ez)
-            return True
+            if self.wz > self.wp:
+                self.sndOrderLowPassNotch(self.maxG, self.bandG, self.wp, self.E, self.wz, self.Ez)
+                return True
+            else:
+                return False
         elif filterType == 'HIGH_PASS_NOTCH':
-            self.sndOrderHighPassNotch(self.maxG, self.bandG, self.wp, self.E, self.wz, self.Ez)
-            return True
+            if self.wz < self.wp:
+                self.sndOrderHighPassNotch(self.maxG, self.bandG, self.wp, self.E, self.wz, self.Ez)
+                return True
+            else:
+                return False
         else:
             return False
 
