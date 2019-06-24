@@ -265,7 +265,7 @@ class ElectroGUI(FirstWindow.Ui_MainWindow, QtWidgets.QMainWindow):
         self.miGraficador.setType("LOW_PASS")
 
     def setPassAll(self):
-        self.miGraficador.setType("PASS_ALL")
+        self.miGraficador.setType("ALL_PASS")
 
     def setBandPass(self):
         self.miGraficador.setType("BAND_PASS")

@@ -55,16 +55,20 @@ class FiltersGrapher:
             y = 0
             if self.filterOrder == 1:
                 self.calculator.firstOrderFilter(self.filterType, args[2:])
-                t, y, output = self.calculator.getResponseToSine(args[0], args[1])
+                x, [t, y, output] = self.calculator.getResponseToSine(args[0], args[1])
 
             elif self.filterOrder == 2:
-                self.calculator.secondOrderFilter(self.filterType, args[2:])
-                t, y, output = self.calculator.getResponseToSine(args[0], args[1])
+                if self.calculator.secondOrderFilter(self.filterType, args[2:]):
+                    x, [t, y, output] = self.calculator.getResponseToSine(args[0], args[1])
+                else:
+                    self.errMessage = 'Error al ingresar los datos para el calculo del filtro. Revisar si wz > wp para un low-pass-notch o si wz < wp para un high-pass-notch.'
+                    self.showErrMessage()
 
             plt.figure()
-            plt.plot(t, y)
+            plt.plot(t, x, 'r', label='Senoidal de entrada')
+            plt.plot(t, y, 'b', label='Respuesta')
+            plt.legend(loc='upper right')
             plt.xlabel('Tiempo (s)')
-            plt.ylabel('Respuesta a senoidal')
             plt.show()
 
 
@@ -110,16 +114,20 @@ class FiltersGrapher:
             y = 0
             if self.filterOrder == 1:
                 self.calculator.firstOrderFilter(self.filterType, args[1:])
-                t, y, output= self.calculator.getResponseToHeaviside(args[0])
+                x, [t, y, output]= self.calculator.getResponseToHeaviside(args[0])
 
             elif self.filterOrder == 2:
-                self.calculator.secondOrderFilter(self.filterType, args[1:])
-                t, y, output = self.calculator.getResponseToHeaviside(args[0])
+                if self.calculator.secondOrderFilter(self.filterType, args[1:]):
+                    x, [t, y, output] = self.calculator.getResponseToHeaviside(args[0])
+                else:
+                    self.errMessage = 'Error al ingresar los datos para el calculo del filtro. Revisar si wz > wp para un low-pass-notch o si wz < wp para un high-pass-notch.'
+                    self.showErrMessage()
                 
             plt.figure()
-            plt.plot(t, y)
+            plt.plot(t, x, 'r', label='Escalon')
+            plt.plot(t, y, 'b', label='Respuesta')
+            plt.legend(loc='upper right')
             plt.xlabel('Tiempo (s)')
-            plt.ylabel('Respuesta al escalón')
             plt.show()
 
 
@@ -129,17 +137,21 @@ class FiltersGrapher:
             y = 0
             if self.filterOrder == 1:
                 self.calculator.firstOrderFilter(self.filterType, args[3:])
-                t, y, output = self.calculator.getResponseToPulseTrain(args[0], args[1], args[2])
+                x, [t, y, output] = self.calculator.getResponseToPulseTrain(args[0], args[1], args[2])
 
             elif self.filterOrder == 2:
-                self.calculator.secondOrderFilter(self.filterType, args[3:])           
-                t, y, output = self.calculator.getResponseToPulseTrain(args[0], args[1], args[2])
+                if self.calculator.secondOrderFilter(self.filterType, args[3:]):
+                    x, [t, y, output] = self.calculator.getResponseToPulseTrain(args[0], args[1], args[2])
+                else:
+                    self.errMessage = 'Error al ingresar los datos para el calculo del filtro. Revisar si wz > wp para un low-pass-notch o si wz < wp para un high-pass-notch.'
+                    self.showErrMessage()
 
                 
             plt.figure()
-            plt.plot(t, y)
+            plt.plot(t, x, 'r', label='Tren de pulsos')
+            plt.plot(t, y, 'b', label='Respuesta')
+            plt.legend(loc='upper right')
             plt.xlabel('Tiempo (s)')
-            plt.ylabel('Respuesta al tren de pulsos')
             plt.show()
 
 
@@ -153,8 +165,11 @@ class FiltersGrapher:
                 w, g, phase = self.calculator.getBode(self.usingHertz, self.usingdB)
 
             elif self.filterOrder == 2:
-                self.calculator.secondOrderFilter(self.filterType, args)
-                w, g, phase = self.calculator.getBode(self.usingHertz, self.usingdB)
+                if self.calculator.secondOrderFilter(self.filterType, args):
+                    w, g, phase = self.calculator.getBode(self.usingHertz, self.usingdB)
+                else:
+                    self.errMessage = 'Error al ingresar los datos para el calculo del filtro. Revisar si wz > wp para un low-pass-notch o si wz < wp para un high-pass-notch.'
+                    self.showErrMessage()
 
             plt.figure()
             plt.semilogx(w, g)
@@ -252,7 +267,7 @@ class FiltersGrapher:
             if args[0] != 0 and args[0] != '':
                 G = args[0]
             else:
-                g = args[1]
+                G = args[1]
             wp = args[2]
 
             if G > 0:
