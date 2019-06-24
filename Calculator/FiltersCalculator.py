@@ -287,11 +287,8 @@ class FiltersCalculator:
         3-tuple with T (1D ndarray with the time values for the output), yout (1D ndarray 
         with the system's response) and xout (ndarray the time evolution of the state vector)
         '''
-        t = numpy.linspace(-3*(1/f), 10*(1/f), 13000)
+        t = numpy.linspace(0, 10*(1/f), 13000)
         x = A*numpy.sin(2 * numpy.pi * f * t)
-        t, y, output = self.sys.output(x, t)
-        t = t[3000:]
-        x = x[3000:]
 
         return x, self.sys.output(x, t)
 
