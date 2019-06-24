@@ -63,6 +63,7 @@ class FiltersGrapher:
                 else:
                     self.errMessage = 'Error al ingresar los datos para el calculo del filtro. Revisar si wz > wp para un low-pass-notch o si wz < wp para un high-pass-notch.'
                     self.showErrMessage()
+                    return
 
             plt.figure()
             plt.plot(t, x, 'r', label='Senoidal de entrada')
@@ -122,6 +123,7 @@ class FiltersGrapher:
                 else:
                     self.errMessage = 'Error al ingresar los datos para el calculo del filtro. Revisar si wz > wp para un low-pass-notch o si wz < wp para un high-pass-notch.'
                     self.showErrMessage()
+                    return
                 
             plt.figure()
             plt.plot(t, x, 'r', label='Escalon')
@@ -145,6 +147,7 @@ class FiltersGrapher:
                 else:
                     self.errMessage = 'Error al ingresar los datos para el calculo del filtro. Revisar si wz > wp para un low-pass-notch o si wz < wp para un high-pass-notch.'
                     self.showErrMessage()
+                    return
 
                 
             plt.figure()
@@ -170,6 +173,7 @@ class FiltersGrapher:
                 else:
                     self.errMessage = 'Error al ingresar los datos para el calculo del filtro. Revisar si wz > wp para un low-pass-notch o si wz < wp para un high-pass-notch.'
                     self.showErrMessage()
+                    return
 
             plt.figure()
             plt.semilogx(w, g)
@@ -286,7 +290,7 @@ class FiltersGrapher:
             if args[0] != 0 and args[0] != '':
                 G = args[0]
             else:
-                g = args[1]
+                G =  args[1]
             wp = args[2]
             E = args[3]
 

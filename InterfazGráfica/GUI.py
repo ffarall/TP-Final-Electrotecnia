@@ -1,7 +1,7 @@
 import PyQt5 as pyqt
 import sys
-sys.path.insert(0, 'C:/Users/gonzalo/Desktop/ITBA/ELECTROTECNIA/tp final/TP-Final-Electrotecnia')
-#sys.path.insert(0, 'C:/Users/facun/OneDrive/Desktop/ITBA/C4 - Electrotecnia/TP Final')
+#sys.path.insert(0, 'C:/Users/gonzalo/Desktop/ITBA/ELECTROTECNIA/tp final/TP-Final-Electrotecnia')
+sys.path.insert(0, 'C:/Users/facun/OneDrive/Desktop/ITBA/C4 - Electrotecnia/TP Final')
 import FirstWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Grapher.FiltersGrapher import FiltersGrapher
@@ -233,19 +233,6 @@ class ElectroGUI(FirstWindow.Ui_MainWindow, QtWidgets.QMainWindow):
 
 ###Estos metodos se comunican con mi graficador para generar los graficos al presionar la tecla graficar###
     def mostrarGraficoSalida(self):
-        if self.textoGananciaMax == '':
-            self.textoGananciaMax = "0"
-        if self.textoGananciaBanda == '':
-            self.textoGananciaBanda = "0"
-        if self.textoFrec == '':
-            self.textoFrec = "0"
-        if self.textoXsi == '':
-            self.textoXsi = "0"
-        if self.textoWz == '':
-            self.textoWz ="0"
-        if self.textoXsiz == '':
-            self.textoXsiz = "0"
-        
         if self.entrada.currentIndex() == 0: ##estoy en senoidal
             self.miGraficador.plotResponseToSine([float(self.frecEntradaSen.text()), float(self.ampEntradaSen.text()), float(self.textoGananciaMax),float(self.textoGananciaBanda), float(self.textoFrec), float(self.textoXsi), float(self.textoWz), float(self.textoXsiz)])
         elif self.entrada.currentIndex() == 1: ##estoy en escalon
@@ -259,18 +246,6 @@ class ElectroGUI(FirstWindow.Ui_MainWindow, QtWidgets.QMainWindow):
         self.ampEntradaPulso.clear()
    
     def mostrarGraficoBode(self):
-        if self.textoGananciaMax == '':
-            self.textoGananciaMax = "0"
-        if self.textoGananciaBanda == '':
-            self.textoGananciaBanda = "0"
-        if self.textoFrec == '':
-            self.textoFrec = "0"
-        if self.textoXsi == '':
-            self.textoXsi = "0"
-        if self.textoWz == '':
-            self.textoWz ="0"
-        if self.textoXsiz == '':
-            self.textoXsiz = "0"
         if self.eje_x.currentText() == "Hz":
            hertz = True
         else:
