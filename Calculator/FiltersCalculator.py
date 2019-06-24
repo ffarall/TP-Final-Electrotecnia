@@ -284,7 +284,7 @@ class FiltersCalculator:
         t = numpy.linspace(0, 10*(1/f), 5000)
         x = A*numpy.sin(2 * numpy.pi * f * t)
 
-        return self.sys.output(x, t)
+        return x, self.sys.output(x, t)
 
     
     def getResponseToHeaviside(self, A):
@@ -296,7 +296,7 @@ class FiltersCalculator:
         t = numpy.linspace(0, 5*(1/self.wp), 5000)
         x = A * (numpy.sign(t) + 1)
 
-        return self.sys.output(x, t)
+        return x, self.sys.output(x, t)
 
 
     def getResponseToPulseTrain(self, f, A, dc):
@@ -309,7 +309,7 @@ class FiltersCalculator:
         t = numpy.linspace(0, 10*(1/f), 5000)
         x=signal.square(2 * numpy.pi * f * t, dc)
 
-        return self.sys.output(x, t)
+        return x, self.sys.output(x, t)
 
 
     def getResponseToImpulse(self, A):
