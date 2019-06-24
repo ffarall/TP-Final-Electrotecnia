@@ -289,6 +289,7 @@ class FiltersCalculator:
         '''
         t = numpy.linspace(-3*(1/f), 10*(1/f), 13000)
         x = A*numpy.sin(2 * numpy.pi * f * t)
+        t, y, output = self.sys.output(x, t)
         t = t[3000:]
         x = x[3000:]
 
